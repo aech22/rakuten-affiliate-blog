@@ -22,15 +22,17 @@ jobs:
       - name: Install Python deps
         run: pip install -r requirements.txt
 
-      # 記事生成（fetch → generate）。scripts/ を作業ディレクトリにして相対 import を通す
+      # 記事生成（fetch → generate）。ルートから実行（main.py が自分で scripts/ を import パスに追加）
       - name: Fetch & Generate
-        working-directory: scripts
         env:
           RAKUTEN_APP_ID:        ${{ secrets.RAKUTEN_APP_ID }}
           RAKUTEN_ACCESS_KEY:    ${{ secrets.RAKUTEN_ACCESS_KEY }}
           RAKUTEN_AFFILIATE_ID:  ${{ secrets.RAKUTEN_AFFILIATE_ID }}
           ANTHROPIC_API_KEY:     ${{ secrets.ANTHROPIC_API_KEY }}
-        run: python main.py
+          # Origin/Referer は機密でないので平文。新APIの必須ヘッダに使う（登録ドメインと一致）
+          RAKUTEN_REFERER:       https://aech22.github.io/rakuten-affiliate-blog/
+          RAKUTEN_ORIGIN:        https://aech22.github.io
+        run: python scripts/main.py
 
       # 機械的品質ゲート（人手レビューなし）。不合格記事があれば非ゼロ終了でジョブを止め、
       # build / deploy まで到達させない＝低品質記事を公開しない

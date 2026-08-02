@@ -12,3 +12,6 @@ products.json
 node_modules/
 dist/
 .astro/
+
+# python venv
+.venv/

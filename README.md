@@ -45,8 +45,11 @@ Claude は以下を代行できません（アカウント作成・秘密情報�
 - [ ] GitHub にこのリポジトリを push し、**Settings → Secrets and variables → Actions** に
       `RAKUTEN_APP_ID` / `RAKUTEN_ACCESS_KEY` / `RAKUTEN_AFFILIATE_ID` / `ANTHROPIC_API_KEY` を登録
 
-> ※ 楽天API は新方式（Rakuten Developers コンソール）。Application ID(UUID) + Access Key(pk_) の2点が必要で、
->   エンドポイントは `openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260701`（旧 `app.rakuten.co.jp/...20220601` は UUID を受け付けない）。
+> ※ 楽天API は新方式（Rakuten Developers コンソール）。実測で判明した要件:
+> - エンドポイント: `openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260701`（旧 `app.rakuten.co.jp/...20220601` は UUID Application ID を受け付けない）
+> - 認証: `applicationId`(UUID) + `accessKey`(pk_) をクエリで送る
+> - **必須ヘッダ: `Referer` と `Origin` の両方**（登録した Allowed websites ドメインと一致。片方だけだと 403 `REFERRER_MISSING`）
+> - レスポンスは `Items`（大文字）配列でフラット構造。`affiliateUrl` は `hb.afl.rakuten.co.jp` 形式で品質ゲートと整合
 - [ ] **Settings → Pages** で公開ソースを `gh-pages` ブランチに設定
 - [ ] `astro.config.mjs` の `site` を公開URLに変更（sitemap・OGP用）
 

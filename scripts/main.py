@@ -1,12 +1,16 @@
-# scripts/main.py — エントリーポイント（workflow の `python scripts/main.py`）
-import datetime
+# scripts/main.py — エントリーポイント（リポジトリルートから `python scripts/main.py`）
+import datetime, os, sys
 from pathlib import Path
+
+# どのCWDから実行しても scripts/ 内の同階層モジュールを import できるようにする
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from config import TOPICS
 from fetch_products import fetch_products      # 内部で 1req/秒 のレート制御
 from generate_article import generate_article
 
-OUT_DIR = Path("content/articles")
+# 出力先は常にリポジトリルート直下の content/articles（scripts の1つ上）
+OUT_DIR = Path(__file__).resolve().parent.parent / "content" / "articles"
 
 def slugify(theme: str) -> str:
     return "".join(c if c.isalnum() else "-" for c in theme).strip("-").lower()[:50]
