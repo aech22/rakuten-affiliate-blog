@@ -12,6 +12,7 @@ SYSTEM_PROMPT = """
 - 価格帯と対象ユーザーを明記する
 - 誇大表現・根拠のない最上級表現は使わない（楽天規約準拠）
 - 出力形式: Markdownのみ（frontmatterを含む。title と date を必須で入れる）
+- 重要: コードフェンス（```）で囲まないこと。1文字目を frontmatter の `---` から始め、前置きや後書きを付けない
 
 frontmatter の形式（先頭に必ず付ける）:
 ---
@@ -20,6 +21,21 @@ date: 2026-08-02
 description: "記事の要約（100字程度）"
 ---
 """
+
+def _clean_markdown(md: str) -> str:
+    """LLMが付けがちな ```markdown 囲みや前置きを除去し、frontmatterの --- から始める。"""
+    md = md.strip()
+    if md.startswith("```"):
+        nl = md.find("\n")
+        md = md[nl + 1:] if nl != -1 else md      # 先頭の ```lang 行を落とす
+        md = md.rstrip()
+        if md.endswith("```"):
+            md = md[:-3].rstrip()                  # 末尾の ``` を落とす
+    if not md.startswith("---"):                   # 前置きがあれば最初の --- から
+        i = md.find("---")
+        if i != -1:
+            md = md[i:]
+    return md.strip() + "\n"
 
 def generate_article(products: list, theme: str) -> str:
     product_json = json.dumps(products[:3], ensure_ascii=False, indent=2)
@@ -39,7 +55,7 @@ affiliateUrlをそのままリンクに使用してください。
 """
         }]
     )
-    return message.content[0].text
+    return _clean_markdown(message.content[0].text)
 
 # CLI: python scripts/generate_article.py --input products.json --theme "..." --output content/articles/test.md
 if __name__ == "__main__":
