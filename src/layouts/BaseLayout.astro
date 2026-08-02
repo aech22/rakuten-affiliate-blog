@@ -1,0 +1,43 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  noindex?: boolean;
+}
+const { title, description = 'おすすめ商品をレビュー・比較するアフィリエイトブログ', noindex = false } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <link rel="canonical" href={canonical} />
+    <!-- OGP -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary_large_image" />
+  </head>
+  <body class="min-h-screen bg-white text-gray-900">
+    <header class="border-b">
+      <div class="mx-auto max-w-3xl px-4 py-4">
+        <a href="/" class="text-lg font-bold">おすすめ比較ブログ</a>
+      </div>
+    </header>
+    <main class="mx-auto max-w-3xl px-4 py-8">
+      <slot />
+    </main>
+    <footer class="mt-16 border-t">
+      <div class="mx-auto max-w-3xl px-4 py-6 text-sm text-gray-500">
+        <p>本サイトはアフィリエイト広告（楽天アフィリエイト等）を利用しています。</p>
+      </div>
+    </footer>
+  </body>
+</html>

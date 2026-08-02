@@ -1,0 +1,53 @@
+name: Generate Articles & Deploy
+
+on:
+  schedule:
+    - cron: '0 1 * * *'  # 毎日 JST 10:00（価格・在庫を24時間以内に更新＝楽天規約準拠）
+  workflow_dispatch:     # 手動実行も可
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Python deps
+        run: pip install -r requirements.txt
+
+      # 記事生成（fetch → generate）。scripts/ を作業ディレクトリにして相対 import を通す
+      - name: Fetch & Generate
+        working-directory: scripts
+        env:
+          RAKUTEN_APP_ID:        ${{ secrets.RAKUTEN_APP_ID }}
+          RAKUTEN_AFFILIATE_ID:  ${{ secrets.RAKUTEN_AFFILIATE_ID }}
+          ANTHROPIC_API_KEY:     ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python main.py
+
+      # 機械的品質ゲート（人手レビューなし）。不合格記事があれば非ゼロ終了でジョブを止め、
+      # build / deploy まで到達させない＝低品質記事を公開しない
+      - name: Quality gate
+        run: python scripts/quality_check.py content/articles
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Build Astro site
+        run: |
+          npm ci
+          npm run build
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist

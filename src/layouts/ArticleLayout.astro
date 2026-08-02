@@ -1,0 +1,26 @@
+---
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  date: Date;
+  noindex?: boolean;
+}
+const { title, description, date, noindex = false } = Astro.props;
+const dateStr = date.toISOString().slice(0, 10);
+---
+<BaseLayout title={title} description={description} noindex={noindex}>
+  <article class="prose prose-lg max-w-none">
+    <!-- ステマ規制・景表法対応: 冒頭にPR表記を明示 -->
+    <p class="not-prose mb-6 rounded bg-amber-50 px-3 py-2 text-sm text-amber-800">
+      ※本記事はアフィリエイト広告（楽天アフィリエイト）を含みます。
+    </p>
+    <h1>{title}</h1>
+    <p class="not-prose text-sm text-gray-500">{dateStr}</p>
+    <slot />
+  </article>
+  <p class="mt-10">
+    <a href="/" class="text-blue-600 underline">← 記事一覧へ戻る</a>
+  </p>
+</BaseLayout>
