@@ -25,8 +25,13 @@ def fetch_products(keyword: str, hits: int = 5) -> list:
         "imageFlag":     1,
         "formatVersion": 2,                     # items[] の各要素が商品dict直下になる新形式
     }
+    if not RAKUTEN_ACCESS_KEY:
+        raise SystemExit("RAKUTEN_ACCESS_KEY が空です。.env に Access Key(pk_...) を入れてください。")
+
     res = requests.get(ENDPOINT, params=params)
-    res.raise_for_status()
+    if res.status_code != 200:
+        # 楽天APIのエラー本文（errors.errorMessage）をそのまま表示して切り分けしやすくする
+        raise SystemExit(f"Rakuten API {res.status_code}: {res.text}")
     time.sleep(RATE_LIMIT_SEC)                  # レート制御（1req/秒）
     # formatVersion=2: {"items": [ {itemName, itemPrice, affiliateUrl, mediumImageUrls, ...}, ... ]}
     return res.json()["items"]
