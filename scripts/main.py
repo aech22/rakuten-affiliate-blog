@@ -6,8 +6,11 @@ from pathlib import Path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from config import TOPICS
-from fetch_products import fetch_products      # 内部で 1req/秒 のレート制御
-from generate_article import generate_article
+from fetch_products import fetch_products          # 内部で 1req/秒 のレート制御
+from generate_article import build_article, to_markdown
+
+# 日付は日本時間(JST)で確定する（GitHub ActionsはUTCで動くため、指定しないと日付が1日ずれる）
+JST = datetime.timezone(datetime.timedelta(hours=9))
 
 # 出力先は常にリポジトリルート直下の content/articles（scripts の1つ上）
 OUT_DIR = Path(__file__).resolve().parent.parent / "content" / "articles"
@@ -17,15 +20,19 @@ def slugify(theme: str) -> str:
 
 def main() -> None:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
-    today = datetime.date.today().isoformat()
+    today = datetime.datetime.now(JST).date().isoformat()
     generated = 0
     for topic in TOPICS:
         try:
-            products = fetch_products(topic["keyword"], topic["hits"])  # sleep はこの中
-            md = generate_article(products, topic["theme"])
+            products = fetch_products(topic["keyword"], topic["hits"])   # sleep はこの中
+            if not products:
+                print(f"[SKIP] {topic['theme']}: 商品が0件")
+                continue
+            category = topic.get("category") or topic["keyword"]
+            fm = build_article(products, topic["theme"], today, category)
             path = OUT_DIR / f"{today}-{slugify(topic['theme'])}.md"
-            path.write_text(md, encoding="utf-8")
-            print(f"generated -> {path}")
+            path.write_text(to_markdown(fm), encoding="utf-8")
+            print(f"generated -> {path.name}（{len(fm['products'])}商品）")
             generated += 1
         except Exception as e:
             # 1テーマ失敗しても他を継続（日次ジョブを止めない）。原因は簡潔に表示。

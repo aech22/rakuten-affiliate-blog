@@ -1,26 +1,205 @@
 ---
 import BaseLayout from './BaseLayout.astro';
 
-interface Props {
-  title: string;
-  description?: string;
-  date: Date;
-  noindex?: boolean;
+interface Product {
+  rank?: number | null;
+  name: string;
+  price?: number | null;
+  image?: string | null;
+  url: string;
+  shop?: string | null;
+  reviewAverage?: number | null;
+  reviewCount?: number | null;
+  priceBand?: string | null;
+  pros?: string[] | null;
+  cons?: string | null;
+  target?: string | null;
 }
-const { title, description, date, noindex = false } = Astro.props;
-const dateStr = date.toISOString().slice(0, 10);
+interface Data {
+  title: string;
+  description?: string | null;
+  date: Date;
+  category?: string | null;
+  intro?: string | null;
+  outro?: string | null;
+  products?: Product[] | null;
+  noindex?: boolean | null;
+}
+const { data } = Astro.props as { data: Data };
+const products = data.products ?? [];
+const dateStr = data.date.toISOString().slice(0, 10).replace(/-/g, '.');
+const yen = (n?: number | null) => (n == null ? '' : '¥' + n.toLocaleString('ja-JP'));
+const rankStyle = (r?: number | null) =>
+  r === 1 ? 'bg-amber-400 text-white'
+  : r === 2 ? 'bg-slate-400 text-white'
+  : r === 3 ? 'bg-orange-300 text-white'
+  : 'bg-brand-100 text-brand-600';
+const clip = (s: string, n: number) => (s.length > n ? s.slice(0, n) + '…' : s);
+const REL = 'nofollow sponsored noopener';
+const ogImage = products[0]?.image ?? undefined;
 ---
-<BaseLayout title={title} description={description} noindex={noindex}>
-  <article class="prose prose-lg max-w-none">
-    <!-- ステマ規制・景表法対応: 冒頭にPR表記を明示 -->
-    <p class="not-prose mb-6 rounded bg-amber-50 px-3 py-2 text-sm text-amber-800">
-      ※本記事はアフィリエイト広告（楽天アフィリエイト）を含みます。
+<BaseLayout
+  title={`${data.title}｜picknavi`}
+  description={data.description ?? undefined}
+  noindex={data.noindex ?? false}
+  ogImage={ogImage}
+>
+  <main class="mx-auto max-w-3xl px-4 py-8">
+    <nav class="text-xs font-medium text-ink/40">
+      <a href="/" class="hover:text-brand-600">ホーム</a> ／ {data.category ?? '記事'}
+    </nav>
+
+    <div class="mt-3 flex flex-wrap items-center gap-2">
+      {data.category && (
+        <span class="rounded-full bg-brand-100 px-3 py-1 text-xs font-black text-brand-600">{data.category}</span>
+      )}
+      <span class="text-xs font-medium text-ink/40">{dateStr} 更新・{products.length}商品を比較</span>
+    </div>
+
+    <h1 class="mt-3 text-2xl font-black leading-tight sm:text-3xl">{data.title}</h1>
+
+    <p class="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm leading-relaxed text-amber-800">
+      本記事はアフィリエイト広告（楽天アフィリエイト）を含みます。価格・レビューは掲載時点のもので、変動する場合があります。
     </p>
-    <h1>{title}</h1>
-    <p class="not-prose text-sm text-gray-500">{dateStr}</p>
-    <slot />
-  </article>
-  <p class="mt-10">
-    <a href="/" class="text-blue-600 underline">← 記事一覧へ戻る</a>
-  </p>
+
+    {data.intro && <p class="mt-6 text-[15px] leading-relaxed text-ink/80">{data.intro}</p>}
+
+    <!-- 商品カード -->
+    <div class="mt-8 space-y-6">
+      {
+        products.map((p) => (
+          <article class="overflow-hidden rounded-2xl border border-black/5 bg-white shadow-sm transition hover:shadow-md">
+            <div class="flex flex-col sm:flex-row">
+              <div class="relative shrink-0 bg-brand-50 sm:w-56">
+                <span
+                  class={`absolute left-3 top-3 grid h-9 w-9 place-items-center rounded-full text-sm font-black shadow ${rankStyle(p.rank)}`}
+                >
+                  {p.rank}
+                </span>
+                {p.image ? (
+                  <img
+                    src={p.image}
+                    alt={p.name}
+                    loading="lazy"
+                    class="mx-auto h-56 w-full object-contain p-5 sm:h-full"
+                  />
+                ) : (
+                  <div class="grid h-56 place-items-center text-sm text-brand-500/40">no image</div>
+                )}
+              </div>
+
+              <div class="flex flex-1 flex-col p-5">
+                <h2 class="text-base font-bold leading-snug">
+                  <a href={p.url} target="_blank" rel={REL} class="hover:text-brand-600">{p.name}</a>
+                </h2>
+                {p.shop && <p class="mt-1 text-xs text-ink/40">{p.shop}</p>}
+
+                {p.reviewAverage != null && (
+                  <div class="mt-2 flex items-center gap-1.5 text-sm">
+                    <span class="stars"><span style={`width:${((p.reviewAverage / 5) * 100).toFixed(1)}%`} /></span>
+                    <b class="text-ink/80">{p.reviewAverage.toFixed(2)}</b>
+                    {p.reviewCount != null && (
+                      <span class="text-xs text-ink/40">（{p.reviewCount.toLocaleString('ja-JP')}件）</span>
+                    )}
+                  </div>
+                )}
+
+                <div class="mt-2 flex flex-wrap items-baseline gap-2">
+                  <span class="text-2xl font-black text-brand-600">{yen(p.price)}</span>
+                  {p.priceBand && (
+                    <span class="rounded bg-brand-50 px-2 py-0.5 text-xs font-black text-brand-600">{p.priceBand}</span>
+                  )}
+                </div>
+
+                {p.pros && p.pros.length > 0 && (
+                  <ul class="mt-3 space-y-1.5">
+                    {p.pros.map((pro) => (
+                      <li class="flex gap-2 text-sm text-ink/80">
+                        <span class="mt-0.5 font-black text-green-500">✓</span>
+                        <span>{pro}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+
+                {p.cons && (
+                  <p class="mt-3 text-sm leading-relaxed text-ink/55">
+                    <span class="font-bold text-ink/70">気になる点：</span>{p.cons}
+                  </p>
+                )}
+                {p.target && (
+                  <p class="mt-1 text-sm leading-relaxed text-ink/55">
+                    <span class="font-bold text-ink/70">向いている人：</span>{p.target}
+                  </p>
+                )}
+
+                <a
+                  href={p.url}
+                  target="_blank"
+                  rel={REL}
+                  class="mt-4 inline-flex items-center justify-center gap-2 rounded-xl bg-brand-500 px-5 py-3 text-sm font-black text-white shadow-sm transition hover:bg-brand-600 hover:shadow"
+                >
+                  楽天で「{clip(p.name, 14)}」を見る →
+                </a>
+              </div>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+
+    <!-- 比較まとめ表 -->
+    {
+      products.length > 1 && (
+        <section class="mt-12">
+          <h2 class="mb-3 flex items-center gap-2 text-lg font-black">
+            <span class="h-5 w-1.5 rounded bg-brand-500" />比較まとめ
+          </h2>
+          <div class="overflow-x-auto rounded-xl border border-black/5">
+            <table class="w-full min-w-[440px] border-collapse bg-white text-sm">
+              <thead>
+                <tr class="bg-brand-50 text-ink/70">
+                  <th class="p-3 text-left font-black">商品</th>
+                  <th class="p-3 text-right font-black">価格</th>
+                  <th class="p-3 text-center font-black">評価</th>
+                  <th class="p-3 text-left font-black">価格帯</th>
+                </tr>
+              </thead>
+              <tbody>
+                {products.map((p) => (
+                  <tr class="border-t border-black/5">
+                    <td class="p-3">
+                      <a href={p.url} target="_blank" rel={REL} class="font-medium text-brand-600 hover:underline">
+                        {p.rank}位. {clip(p.name, 22)}
+                      </a>
+                    </td>
+                    <td class="p-3 text-right font-bold whitespace-nowrap">{yen(p.price)}</td>
+                    <td class="p-3 text-center whitespace-nowrap">
+                      {p.reviewAverage != null ? `★${p.reviewAverage.toFixed(2)}` : '—'}
+                    </td>
+                    <td class="p-3 text-ink/60">{p.priceBand ?? '—'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      )
+    }
+
+    {
+      data.outro && (
+        <section class="mt-12 rounded-2xl bg-brand-50 p-6">
+          <h2 class="mb-2 text-lg font-black text-ink">まとめ</h2>
+          <p class="text-[15px] leading-relaxed text-ink/80">{data.outro}</p>
+        </section>
+      )
+    }
+
+    <p class="mt-10">
+      <a href="/" class="inline-flex items-center gap-1 text-sm font-black text-brand-600 hover:underline">
+        ← 記事一覧へ戻る
+      </a>
+    </p>
+  </main>
 </BaseLayout>
