@@ -41,9 +41,12 @@ Claude は以下を代行できません（アカウント作成・秘密情報�
 - [ ] **楽天アフィリエイト** (https://affiliate.rakuten.co.jp/) に申請し `affiliateId` を取得
 - [ ] **楽天デベロッパー** (https://webservice.rakuten.co.jp/) でアプリ登録し `applicationId` を取得
 - [ ] **Anthropic APIキー** を取得（`ANTHROPIC_API_KEY`）
-- [ ] `.env` に3つの値を設定（ローカル実行用）
+- [ ] `.env` に4つの値を設定（ローカル実行用）: `RAKUTEN_APP_ID`（UUID）/ `RAKUTEN_ACCESS_KEY`（`pk_...`・機密）/ `RAKUTEN_AFFILIATE_ID` / `ANTHROPIC_API_KEY`
 - [ ] GitHub にこのリポジトリを push し、**Settings → Secrets and variables → Actions** に
-      `RAKUTEN_APP_ID` / `RAKUTEN_AFFILIATE_ID` / `ANTHROPIC_API_KEY` を登録
+      `RAKUTEN_APP_ID` / `RAKUTEN_ACCESS_KEY` / `RAKUTEN_AFFILIATE_ID` / `ANTHROPIC_API_KEY` を登録
+
+> ※ 楽天API は新方式（Rakuten Developers コンソール）。Application ID(UUID) + Access Key(pk_) の2点が必要で、
+>   エンドポイントは `openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260701`（旧 `app.rakuten.co.jp/...20220601` は UUID を受け付けない）。
 - [ ] **Settings → Pages** で公開ソースを `gh-pages` ブランチに設定
 - [ ] `astro.config.mjs` の `site` を公開URLに変更（sitemap・OGP用）
 
