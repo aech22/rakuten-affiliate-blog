@@ -18,12 +18,19 @@ def slugify(theme: str) -> str:
 def main() -> None:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     today = datetime.date.today().isoformat()
+    generated = 0
     for topic in TOPICS:
-        products = fetch_products(topic["keyword"], topic["hits"])  # sleep はこの中
-        md = generate_article(products, topic["theme"])
-        path = OUT_DIR / f"{today}-{slugify(topic['theme'])}.md"
-        path.write_text(md, encoding="utf-8")
-        print(f"generated -> {path}")
+        try:
+            products = fetch_products(topic["keyword"], topic["hits"])  # sleep はこの中
+            md = generate_article(products, topic["theme"])
+            path = OUT_DIR / f"{today}-{slugify(topic['theme'])}.md"
+            path.write_text(md, encoding="utf-8")
+            print(f"generated -> {path}")
+            generated += 1
+        except Exception as e:
+            # 1テーマ失敗しても他を継続（日次ジョブを止めない）。原因は簡潔に表示。
+            print(f"[SKIP] {topic['theme']}: {type(e).__name__}: {e}")
+    print(f"done: {generated}/{len(TOPICS)} 記事を生成")
 
 if __name__ == "__main__":
     main()
