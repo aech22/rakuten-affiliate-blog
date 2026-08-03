@@ -14,6 +14,10 @@ def _prose_text(fm: dict) -> str:
     for p in fm.get("products", []) or []:
         parts += (p.get("pros") or [])
         parts += [p.get("cons", ""), p.get("target", "")]
+    for g in fm.get("guide", []) or []:
+        parts += [g.get("point", ""), g.get("desc", "")]
+    for q in fm.get("faqs", []) or []:
+        parts += [q.get("q", ""), q.get("a", "")]
     return " ".join(x for x in parts if x).strip()
 
 def check(md: str) -> list:

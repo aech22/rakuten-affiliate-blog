@@ -1,0 +1,100 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Jsonld from '../components/Jsonld.astro';
+import { categoryBySlug } from '../data/taxonomy';
+
+const TOP_N = 20;
+const articles = await getCollection('articles');
+
+// 全記事の商品を集約し、レビュー数の多い順（＝実際に売れている順）に並べる
+type Row = {
+  name: string; url: string; image?: string | null; price?: number | null;
+  reviewAverage?: number | null; reviewCount: number;
+  articleId: string; articleTitle: string; categorySlug?: string | null;
+};
+const rows: Row[] = [];
+for (const a of articles) {
+  for (const p of a.data.products ?? []) {
+    rows.push({
+      name: p.name, url: p.url, image: p.image, price: p.price,
+      reviewAverage: p.reviewAverage, reviewCount: p.reviewCount ?? 0,
+      articleId: a.id, articleTitle: a.data.title, categorySlug: a.data.categorySlug,
+    });
+  }
+}
+rows.sort((x, y) => y.reviewCount - x.reviewCount);
+const top = rows.slice(0, TOP_N);
+
+const title = '楽天で売れている人気商品ランキング｜picknavi';
+const description = 'picknaviで比較した全商品を、楽天のレビュー件数（＝実際に売れている数）が多い順にランキング。写真・価格・評価で今人気の商品がひと目でわかります。';
+const breadcrumbs = [
+  { name: 'ホーム', url: '/' },
+  { name: '人気ランキング', url: '/ranking/' },
+];
+const site = Astro.site ?? new URL('https://picknavi.net');
+const listLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: title,
+  numberOfItems: top.length,
+  itemListElement: top.map((r, i) => ({
+    '@type': 'ListItem', position: i + 1, name: r.name,
+    ...(r.image ? { image: r.image } : {}), url: r.url,
+  })),
+};
+const yen = (n?: number | null) => (n == null ? '' : '¥' + n.toLocaleString('ja-JP'));
+const rankStyle = (i: number) =>
+  i === 0 ? 'bg-amber-400 text-white' : i === 1 ? 'bg-slate-400 text-white'
+  : i === 2 ? 'bg-orange-300 text-white' : 'bg-brand-100 text-brand-600';
+const REL = 'nofollow sponsored noopener';
+const clip = (s: string, n: number) => (s.length > n ? s.slice(0, n) + '…' : s);
+---
+<BaseLayout title={title} description={description} breadcrumbs={breadcrumbs}>
+  <Jsonld data={listLd} />
+  <main class="mx-auto max-w-3xl px-4 py-8">
+    <nav class="flex flex-wrap items-center gap-1 text-xs font-medium text-ink/40" aria-label="パンくず">
+      <a href="/" class="hover:text-brand-600">ホーム</a><span>／</span><span class="text-ink/60">人気ランキング</span>
+    </nav>
+
+    <header class="mt-4 rounded-2xl bg-gradient-to-br from-brand-500 to-[#ff9a5a] p-6 text-white sm:p-8">
+      <p class="text-3xl">🏆</p>
+      <h1 class="mt-2 text-2xl font-black sm:text-3xl">売れている人気商品ランキング</h1>
+      <p class="mt-2 max-w-2xl text-sm leading-relaxed text-white/90">
+        picknaviで比較した全商品を、楽天の<b class="font-bold">レビュー件数（＝実際に売れている数）</b>が多い順に並べました。今みんなが選んでいる商品がひと目でわかります。
+      </p>
+    </header>
+
+    <ol class="mt-8 space-y-3">
+      {top.map((r, i) => {
+        const cat = categoryBySlug(r.categorySlug);
+        return (
+          <li class="flex items-center gap-3 rounded-2xl border border-black/5 bg-white p-3 shadow-sm sm:gap-4 sm:p-4">
+            <span class={`grid h-9 w-9 shrink-0 place-items-center rounded-full text-sm font-black shadow ${rankStyle(i)}`}>{i + 1}</span>
+            <div class="h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-brand-50 sm:h-20 sm:w-20">
+              {r.image && <img src={r.image} alt={r.name} loading="lazy" width="80" height="80" class="h-full w-full object-contain p-1" />}
+            </div>
+            <div class="min-w-0 flex-1">
+              <a href={r.url} target="_blank" rel={REL} class="line-clamp-2 text-sm font-bold leading-snug text-ink hover:text-brand-600">{r.name}</a>
+              <div class="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs">
+                {r.reviewAverage != null && (
+                  <span class="text-ink/70">★<b>{r.reviewAverage.toFixed(2)}</b>（{r.reviewCount.toLocaleString('ja-JP')}件）</span>
+                )}
+                <span class="font-black text-brand-600">{yen(r.price)}</span>
+              </div>
+              <a href={`/articles/${r.articleId}/`} class="mt-1 inline-block text-xs text-ink/40 hover:text-brand-600">
+                {cat ? `${cat.emoji}${cat.label}` : ''}の比較記事：{clip(r.articleTitle, 20)}
+              </a>
+            </div>
+            <a href={r.url} target="_blank" rel={REL} class="hidden shrink-0 rounded-xl bg-brand-500 px-4 py-2 text-xs font-black text-white transition hover:bg-brand-600 sm:inline-block">楽天で見る →</a>
+          </li>
+        );
+      })}
+    </ol>
+
+    <p class="mt-6 text-xs text-ink/40">※ランキングは楽天市場のレビュー件数をもとにした参考指標です。価格・レビューは変動します。</p>
+    <p class="mt-8">
+      <a href="/" class="inline-flex items-center gap-1 text-sm font-black text-brand-600 hover:underline">← トップへ戻る</a>
+    </p>
+  </main>
+</BaseLayout>

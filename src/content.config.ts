@@ -30,6 +30,8 @@ const articles = defineCollection({
     gender: z.enum(['men', 'women', 'unisex']).nullish(),
     intro: z.string().nullish(),
     outro: z.string().nullish(),
+    guide: z.array(z.object({ point: z.string(), desc: z.string() })).nullish(),
+    faqs: z.array(z.object({ q: z.string(), a: z.string() })).nullish(),
     noindex: z.boolean().nullish(),
     products: z.array(product).nullish(),
   }),

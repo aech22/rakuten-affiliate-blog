@@ -29,10 +29,12 @@ SYSTEM_PROMPT = """あなたは日本語のアフィリエイト比較記事の�
 - pros は各商品の spec や用途から自然に言える具体的な長所を3つ（各30〜55字程度・内容を薄くしない）。
 - cons は正直な短所や購入前の注意点を1〜2文で具体的に。target は「こんな人に向いている」を1文で具体的に。priceBand は価格帯の一言（例:「手頃価格」「中価格帯」「高価格帯」）。
 - intro は記事全体の導入(3〜4文)。outro はまとめ(3〜4文・選び方の指針)。
+- guide は「失敗しない選び方のポイント」を3つ。各 point(10〜18字の見出し) と desc(そのポイントの具体説明1〜2文)。このカテゴリ一般の選び方で、特定商品名は出さない。
+- faqs は読者がよく検索する疑問と回答を3つ。各 q(疑問文) と a(2〜3文の回答)。誇大表現は使わない。
 - 出力は JSON のみ。コードフェンス(```)で囲まない。前置き・後書きを付けない。
 
 出力JSONスキーマ（items の要素数と順序は入力の商品と必ず一致させる）:
-{"title":"SEOを意識した30字前後の記事タイトル","description":"100字程度の要約","intro":"...","outro":"...","items":[{"pros":["...","...","..."],"cons":"...","target":"...","priceBand":"..."}]}"""
+{"title":"SEOを意識した30字前後の記事タイトル","description":"100字程度の要約","intro":"...","outro":"...","guide":[{"point":"...","desc":"..."}],"faqs":[{"q":"...","a":"..."}],"items":[{"pros":["...","...","..."],"cons":"...","target":"...","priceBand":"..."}]}"""
 
 def _extract_json(text: str) -> dict:
     t = text.strip()
@@ -60,7 +62,7 @@ def _llm_prose(products: list, theme: str) -> dict:
     for attempt in range(2):
         msg = client.messages.create(
             model="claude-haiku-4-5-20251001",   # コスト最適化（事実はAPI値を使うのでHaikuで十分）
-            max_tokens=2048,
+            max_tokens=3200,
             system=SYSTEM_PROMPT,
             messages=[{"role": "user",
                        "content": user if attempt == 0 else user + "\n\n前回JSONとして解釈できませんでした。有効なJSONオブジェクトのみを返してください。"}],
@@ -94,6 +96,10 @@ def build_article(products: list, theme: str, date_str: str, category: str,
             "target":        it.get("target", ""),
         }
         out_products.append({k: v for k, v in prod.items() if v not in (None, "", [])})
+    guide = [g for g in (prose.get("guide") or [])
+             if isinstance(g, dict) and g.get("point") and g.get("desc")][:3]
+    faqs = [q for q in (prose.get("faqs") or [])
+            if isinstance(q, dict) and q.get("q") and q.get("a")][:3]
     fm = {
         "title":        prose.get("title") or theme,
         "date":         date_str,                    # 公開日（固定URLでは初回のみ確定し以降維持）
@@ -103,10 +109,12 @@ def build_article(products: list, theme: str, date_str: str, category: str,
         "categorySlug": category_slug,               # 結合キー（例: mens-fashion）
         "gender":       gender,                      # men | women | unisex
         "intro":        prose.get("intro", ""),
+        "guide":        guide,                       # 選び方のポイント（[{point,desc}]）
         "outro":        prose.get("outro", ""),
+        "faqs":         faqs,                        # よくある質問（[{q,a}]・FAQ構造化データ用）
         "products":     out_products,
     }
-    return {k: v for k, v in fm.items() if v not in (None, "")}
+    return {k: v for k, v in fm.items() if v not in (None, "", [])}
 
 def to_markdown(fm: dict) -> str:
     """frontmatter dict を Astro が読める Markdown（frontmatterのみ・本文なし）へ。"""

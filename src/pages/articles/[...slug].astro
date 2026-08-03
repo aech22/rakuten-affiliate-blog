@@ -3,13 +3,24 @@ import { getCollection } from 'astro:content';
 import ArticleLayout from '../../layouts/ArticleLayout.astro';
 
 export async function getStaticPaths() {
-  const articles = await getCollection('articles');
-  return articles.map((article) => ({
-    params: { slug: article.id },
-    props: { data: article.data },
-  }));
+  const all = await getCollection('articles');
+  return all.map((article) => {
+    // 関連記事: 同カテゴリを優先し、足りなければ同性別で補完（自分は除外・最大4件）
+    const sameCat = all.filter((a) => a.id !== article.id && a.data.categorySlug === article.data.categorySlug);
+    const sameGender = all.filter(
+      (a) => a.id !== article.id && a.data.categorySlug !== article.data.categorySlug && a.data.gender === article.data.gender
+    );
+    const picked = [...sameCat, ...sameGender].slice(0, 4);
+    const related = picked.map((a) => ({
+      id: a.id,
+      title: a.data.title,
+      category: a.data.category,
+      image: (a.data.products ?? [])[0]?.image ?? null,
+    }));
+    return { params: { slug: article.id }, props: { data: article.data, related } };
+  });
 }
 
-const { data } = Astro.props;
+const { data, related } = Astro.props;
 ---
-<ArticleLayout data={data} />
+<ArticleLayout data={data} related={related} />
