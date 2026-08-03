@@ -2,7 +2,7 @@
 // いずれも空文字なら無効（タグを出力しない＝計測もしない）。
 
 // Google Analytics 4 の測定ID（例: 'G-XXXXXXXXXX'）。GA4管理画面で発行して貼る。
-export const GA_MEASUREMENT_ID = 'G-2W4B8ZB6BE';
+export const GA_MEASUREMENT_ID = 'G-P972NYBW02';
 
 // Pinterest ドメイン認証コード（Pinterestの「ドメインを申請」で表示される <meta> の content 値）。
 export const PINTEREST_VERIFY = '58cff8b4406d806c92d5571422abefa9';
