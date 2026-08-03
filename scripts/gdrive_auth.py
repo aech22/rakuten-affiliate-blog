@@ -28,7 +28,14 @@ def main() -> None:
         }
     }
     flow = InstalledAppFlow.from_client_config(cfg, SCOPES)
-    creds = flow.run_local_server(port=0)   # ブラウザが開く → 許可
+    # access_type=offline + prompt=consent を強制。これがないと、以前に許可済みの場合
+    # Google はリフレッシュトークンを返さない（＝空になる）。
+    creds = flow.run_local_server(port=0, access_type="offline", prompt="consent")
+    if not creds.refresh_token:
+        print("\n[!] リフレッシュトークンが取得できませんでした。")
+        print("    https://myaccount.google.com/permissions で該当アプリのアクセスを削除してから、")
+        print("    もう一度このスクリプトを実行してください。")
+        sys.exit(1)
     print("\n================ GitHub Secrets に登録する3つ ================")
     print(f"GDRIVE_CLIENT_ID={cid}")
     print(f"GDRIVE_CLIENT_SECRET={csec}")
