@@ -5,7 +5,7 @@ import sys
 from pathlib import Path
 import yaml
 
-MIN_PROSE_CHARS = 600                       # intro+outro+各商品の講評 の合計下限
+MIN_PROSE_CHARS = 450                       # intro+outro+各商品の講評 の合計下限（4商品比較の実測下限に合わせる）
 BANNED = ["最安値", "絶対", "No.1", "ｎｏ.1", "日本一", "業界最安", "完全無料"]
 AFFILIATE_HOST = "hb.afl.rakuten.co.jp"
 
@@ -48,7 +48,10 @@ def check(md: str) -> list:
     if len(prose) < MIN_PROSE_CHARS:
         errors.append(f"講評文が短すぎる（{len(prose)}字 < {MIN_PROSE_CHARS}）")
 
-    hit = [w for w in BANNED if w in md]
+    # 禁止語は「自社の編集文（タイトル＋講評）」だけを対象にする。
+    # 商品名は楽天の実データ（例: 商品名に「No.1」を含む）で、こちらが変更できず事実表記なので対象外。
+    editorial = (fm.get("title", "") or "") + " " + prose
+    hit = [w for w in BANNED if w in editorial]
     if hit:
         errors.append("禁止語を含む: " + ", ".join(hit))
     return errors

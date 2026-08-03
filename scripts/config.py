@@ -29,6 +29,7 @@ TOPICS = [
     {"theme": "歩きやすいレディーススニーカー",     "keyword": "レディース スニーカー", "cat": "ladies-fashion", "hits": 4},
     # 小物系
     {"theme": "毎日つけたい腕時計の選び方",         "keyword": "腕時計",           "cat": "accessories",    "hits": 4},
+    {"theme": "コーデが締まるサングラスの選び方",   "keyword": "サングラス",       "cat": "accessories",    "hits": 4},
     # アウトドア系
     {"theme": "初心者向けソロキャンプ用テント",     "keyword": "テント",           "cat": "outdoor",        "hits": 4},
     # 追加はここに1行ずつ（cat は CATEGORIES のキーから選ぶ）
