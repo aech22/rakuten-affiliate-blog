@@ -11,6 +11,8 @@ const cat = categoryBySlug(d.categorySlug);
 const fmtDate = (x: Date) => x.toISOString().slice(0, 10).replace(/-/g, '.');
 // フィルタ用の data 属性（クライアント側でトグル表示する）
 const gender = d.gender ?? cat?.gender ?? 'unisex';
+// Pinterest保存時の説明文＝検索に強い「タイトル＋要約文」（無ければタイトルのみ）
+const pinDesc = d.description ? `${d.title}｜${d.description}` : `${d.title}｜picknavi`;
 ---
 <a
   href={`/articles/${article.id}/`}
@@ -26,7 +28,7 @@ const gender = d.gender ?? cat?.gender ?? 'unisex';
         loading="lazy"
         width="400"
         height="400"
-        data-pin-description={`${d.title}｜picknavi`}
+        data-pin-description={pinDesc}
         class="h-full w-full object-contain p-4 transition duration-300 group-hover:scale-105"
       />
     ) : (

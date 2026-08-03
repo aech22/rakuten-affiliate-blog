@@ -45,6 +45,8 @@ const rankStyle = (r?: number | null) =>
 const clip = (s: string, n: number) => (s.length > n ? s.slice(0, n) + '…' : s);
 const REL = 'nofollow sponsored noopener';
 const ogImage = products[0]?.image ?? undefined;
+// Pinterest保存時の説明文＝検索に強い「タイトル＋要約文」
+const pinDesc = data.description ? `${data.title}｜${data.description}` : `${data.title}｜picknavi`;
 
 const breadcrumbs = [{ name: 'ホーム', url: '/' }];
 if (gender) breadcrumbs.push({ name: gender.label, url: `/${gender.slug}/` });
@@ -110,7 +112,7 @@ const itemListLd = {
                   {p.rank}
                 </span>
                 {p.image ? (
-                  <img src={p.image} alt={p.name} loading="lazy" width="400" height="400" data-pin-description={`${p.name}｜${data.title}`} class="mx-auto h-56 w-full object-contain p-5 sm:h-full" />
+                  <img src={p.image} alt={p.name} loading="lazy" width="400" height="400" data-pin-description={pinDesc} class="mx-auto h-56 w-full object-contain p-5 sm:h-full" />
                 ) : (
                   <div class="grid h-56 place-items-center text-sm text-brand-500/40">no image</div>
                 )}
