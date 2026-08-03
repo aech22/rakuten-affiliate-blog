@@ -15,3 +15,6 @@ dist/
 
 # python venv
 .venv/
+
+# 生成物（Driveへアップロードするだけ・リポジトリには持たない）
+social/

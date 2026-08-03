@@ -76,6 +76,25 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
 
+      # 投稿キット（テキスト＋2:3ピン画像）を生成して Google Drive に保存。
+      # Drive のOAuth情報(secrets)が未設定なら丸ごとスキップ＝オプトイン。設定時のみ依存を入れる。
+      - name: Social kit → Google Drive (optional)
+        if: ${{ github.event.inputs.skip_generate != 'true' }}
+        continue-on-error: true
+        env:
+          GDRIVE_CLIENT_ID:     ${{ secrets.GDRIVE_CLIENT_ID }}
+          GDRIVE_CLIENT_SECRET: ${{ secrets.GDRIVE_CLIENT_SECRET }}
+          GDRIVE_REFRESH_TOKEN: ${{ secrets.GDRIVE_REFRESH_TOKEN }}
+        run: |
+          if [ -z "$GDRIVE_REFRESH_TOKEN" ]; then
+            echo "Google Drive 未設定のためスキップ"; exit 0
+          fi
+          sudo apt-get update -qq && sudo apt-get install -y -qq fonts-noto-cjk
+          pip install --quiet Pillow google-auth google-auth-oauthlib google-api-python-client
+          python scripts/gen_social_kit.py social/social_kit.csv
+          python scripts/gen_pins.py social/pins
+          python scripts/gdrive_upload.py
+
       # 新規記事を X に自動投稿（X APIキー secrets が未設定ならスクリプト側でスキップ）。
       # サイト公開後に実行し、投稿記録(scripts/posted_x.json)をコミットして再投稿を防ぐ。
       - name: Post new articles to X (optional)
