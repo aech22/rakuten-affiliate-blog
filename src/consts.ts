@@ -11,4 +11,4 @@ export const PINTEREST_VERIFY = '58cff8b4406d806c92d5571422abefa9';
 export const TWITTER_SITE = '';
 
 // Google Search Console のHTMLタグ確認コード（<meta name="google-site-verification" content="◯◯◯"> の content値）。
-export const SEARCH_CONSOLE_VERIFY = '';
+export const SEARCH_CONSOLE_VERIFY = 'tacSjOdy0Bcf5FU6fGROr-ugbH3UQ7zwz41oHxakpx4';
