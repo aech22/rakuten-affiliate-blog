@@ -15,6 +15,13 @@ def x_text(title: str, cat: str, url: str) -> str:
     body = f"{tag}{title}\n楽天で売れている商品を写真・価格・レビューで比較👇\n{url}\n#おすすめ #比較"
     return body[:275]
 
+def mmdd(fm: dict) -> str:
+    """公開日(date)を MMDD 文字列に（ファイル名の先頭に付けて新着を見分けやすくする）。"""
+    d = fm.get("date")
+    s = d.strftime("%Y-%m-%d") if hasattr(d, "strftime") else str(d)
+    parts = s.split("-")
+    return f"{parts[1]}{parts[2]}" if len(parts) >= 3 else "0000"
+
 def main(out_path: str) -> None:
     rows = []
     for p in sorted(ART_DIR.glob("*.md")):
@@ -32,6 +39,7 @@ def main(out_path: str) -> None:
         pin_desc = f"{title}｜{desc}" if desc else f"{title}｜picknavi"
         rows.append({
             "slug": slug,
+            "prefix": mmdd(fm),
             "カテゴリ": cat,
             "タイトル": title,
             "記事URL": url,
@@ -53,14 +61,15 @@ def main(out_path: str) -> None:
     posts_dir = out_dir / "posts"
     posts_dir.mkdir(parents=True, exist_ok=True)
     for r in rows:
+        name = f"{r['prefix']}_{r['slug']}"
         body = (
             f"{r['タイトル']}\n\n"
             f"■ Pinterest 説明文（コピペ用）\n{r['ピン説明文']}\n\n"
             f"■ X 投稿文（コピペ用）\n{r['X投稿文']}\n\n"
             f"■ 記事リンク\n{r['記事URL']}\n\n"
-            f"■ 画像\npins/{r['slug']}.jpg\n"
+            f"■ 画像\npins/{name}.jpg\n"
         )
-        (posts_dir / f"{r['slug']}.txt").write_text(body, encoding="utf-8")
+        (posts_dir / f"{name}.txt").write_text(body, encoding="utf-8")
     print(f"wrote {len(rows)} post files -> {posts_dir}")
 
 if __name__ == "__main__":

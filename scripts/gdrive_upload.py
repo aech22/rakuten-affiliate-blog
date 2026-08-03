@@ -50,6 +50,19 @@ def main() -> None:
             meta["parents"] = [parent]
         return svc.files().create(body=meta, fields="id", supportsAllDrives=True).execute()["id"]
 
+    def prune_stale(folder_id: str, keep: set) -> None:
+        """フォルダ内の、今回アップロードした集合に無いファイルを削除（旧ファイル名の掃除・トピック削除対応）。"""
+        res = svc.files().list(q=f"'{folder_id}' in parents and trashed = false",
+                               fields="files(id,name)", pageSize=1000,
+                               supportsAllDrives=True, includeItemsFromAllDrives=True).execute()
+        for f in res.get("files", []):
+            if f["name"] not in keep:
+                try:
+                    svc.files().delete(fileId=f["id"], supportsAllDrives=True).execute()
+                    print(f"deleted stale: {f['name']}")
+                except Exception as e:
+                    print(f"delete失敗 {f['name']}: {e}")
+
     # アプリ管理の保存先フォルダ（drive.file なのでアプリが作った物だけ見える＝重複作成を避けて再利用）
     folder = ensure_folder(ROOT_FOLDER_NAME, None)
 
@@ -71,20 +84,22 @@ def main() -> None:
     pins_dir = Path("social/pins")
     if pins_dir.exists():
         pins_folder = ensure_folder("pins", folder)
-        n = 0
+        names = set()
         for img in sorted(pins_dir.glob("*.jpg")):
             upsert(img, pins_folder, "image/jpeg")
-            n += 1
-        print(f"pins uploaded: {n}")
+            names.add(img.name)
+        prune_stale(pins_folder, names)
+        print(f"pins uploaded: {len(names)}")
 
     posts_dir = Path("social/posts")
     if posts_dir.exists():
         posts_folder = ensure_folder("投稿文", folder)
-        n = 0
+        names = set()
         for txt in sorted(posts_dir.glob("*.txt")):
             upsert(txt, posts_folder, "text/plain")
-            n += 1
-        print(f"posts uploaded: {n}")
+            names.add(txt.name)
+        prune_stale(posts_folder, names)
+        print(f"posts uploaded: {len(names)}")
     print("done")
 
 if __name__ == "__main__":

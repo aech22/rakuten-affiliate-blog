@@ -110,6 +110,13 @@ def make_pin(image_url: str, title: str, category: str, out_path: Path) -> bool:
     canvas.save(out_path, "JPEG", quality=85)
     return True
 
+def mmdd(fm: dict) -> str:
+    """公開日(date)を MMDD 文字列にする。ファイル名の先頭に付けて新着を見分けやすくする。"""
+    d = fm.get("date")
+    s = d.strftime("%Y-%m-%d") if hasattr(d, "strftime") else str(d)
+    parts = s.split("-")
+    return f"{parts[1]}{parts[2]}" if len(parts) >= 3 else "0000"
+
 def main(out_dir: str) -> None:
     out = Path(out_dir)
     made = 0
@@ -122,10 +129,11 @@ def main(out_dir: str) -> None:
         category = fm.get("category", "") or ""
         products = fm.get("products") or []
         image = (products[0] or {}).get("image", "") if products else ""
+        name = f"{mmdd(fm)}_{p.stem}.jpg"
         try:
-            make_pin(image, title, category, out / f"{p.stem}.jpg")
+            make_pin(image, title, category, out / name)
             made += 1
-            print(f"pin -> {p.stem}.jpg")
+            print(f"pin -> {name}")
         except Exception as e:
             print(f"[SKIP] {p.stem}: {type(e).__name__}: {e}")
     print(f"done: {made} pins -> {out}")
