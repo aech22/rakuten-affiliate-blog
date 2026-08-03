@@ -5,7 +5,7 @@
 export const GA_MEASUREMENT_ID = 'G-2W4B8ZB6BE';
 
 // Pinterest ドメイン認証コード（Pinterestの「ドメインを申請」で表示される <meta> の content 値）。
-export const PINTEREST_VERIFY = '';
+export const PINTEREST_VERIFY = '58cff8b4406d806c92d5571422abefa9';
 
 // X(Twitter) の公式アカウント（例: '@picknavi_jp'）。カード下部に表示される。
 export const TWITTER_SITE = '';
