@@ -70,6 +70,9 @@ const itemListLd = {
   description={data.description ?? undefined}
   noindex={data.noindex ?? false}
   ogImage={ogImage}
+  ogType="article"
+  publishedTime={data.date.toISOString()}
+  modifiedTime={(data.updated ?? data.date).toISOString()}
   breadcrumbs={breadcrumbs}
 >
   <main class="mx-auto max-w-3xl px-4 py-8">

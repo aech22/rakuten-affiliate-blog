@@ -8,6 +8,9 @@ interface Props {
   description?: string;
   noindex?: boolean;
   ogImage?: string;
+  ogType?: string;
+  publishedTime?: string;
+  modifiedTime?: string;
   breadcrumbs?: { name: string; url: string }[];
 }
 const {
@@ -15,12 +18,16 @@ const {
   description = '実際に楽天で売れている商品を、写真・価格・レビューと一緒に比較するおすすめ紹介ブログ。',
   noindex = false,
   ogImage,
+  ogType = 'website',
+  publishedTime,
+  modifiedTime,
   breadcrumbs,
 } = Astro.props;
 
 const site = Astro.site ?? new URL('https://picknavi.net');
 const canonical = new URL(Astro.url.pathname, site);
-const ogImg = ogImage ? new URL(ogImage, site).toString() : undefined;
+// 記事は商品画像、それ以外はブランドOGP(/ogp.png)を既定にする（X/Pinterestの共有見栄え）
+const ogImg = new URL(ogImage ?? '/ogp.png', site).toString();
 const year = new Date().getFullYear();
 
 // サイト共通の構造化データ
@@ -68,14 +75,19 @@ const breadcrumbLd = breadcrumbs && breadcrumbs.length
       rel="stylesheet"
     />
     <!-- OGP -->
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
     <meta property="og:site_name" content="picknavi" />
     <meta property="og:locale" content="ja_JP" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     {ogImg && <meta property="og:image" content={ogImg} />}
+    {ogType === 'article' && publishedTime && <meta property="article:published_time" content={publishedTime} />}
+    {ogType === 'article' && modifiedTime && <meta property="article:modified_time" content={modifiedTime} />}
     <meta name="twitter:card" content={ogImg ? 'summary_large_image' : 'summary'} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    {ogImg && <meta name="twitter:image" content={ogImg} />}
     <Jsonld data={orgLd} />
     <Jsonld data={siteLd} />
     {breadcrumbLd && <Jsonld data={breadcrumbLd} />}
@@ -111,6 +123,7 @@ const breadcrumbLd = breadcrumbs && breadcrumbs.length
             <a href={`/${g.slug}/`} class="hover:text-brand-600">{g.label}</a>
           ))}
           <a href="/" class="hover:text-brand-600">記事一覧</a>
+          <a href="/about/" class="hover:text-brand-600">運営者情報</a>
         </nav>
         <p class="mt-4 text-xs leading-relaxed text-ink/45">
           当サイトはアフィリエイト広告（楽天アフィリエイト等）を利用しています。掲載の価格・在庫・レビューは変動する場合があります。最新の情報は各商品ページをご確認ください。

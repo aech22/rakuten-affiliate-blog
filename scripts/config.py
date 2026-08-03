@@ -9,6 +9,16 @@ CATEGORIES = {
     "ladies-fashion": {"label": "レディースファッション", "gender": "women"},
     "accessories":    {"label": "小物系",             "gender": "unisex"},
     "outdoor":        {"label": "アウトドア系",       "gender": "unisex"},
+    # Tier 1
+    "gourmet":        {"label": "スイーツ・グルメ",   "gender": "unisex"},
+    "makeup":         {"label": "メイクコスメ",       "gender": "women"},
+    "fitness":        {"label": "フィットネス",       "gender": "unisex"},
+    "disaster":       {"label": "防災グッズ",         "gender": "unisex"},
+    # Tier 2
+    "pet":            {"label": "ペット用品",         "gender": "unisex"},
+    "interior":       {"label": "インテリア・収納",   "gender": "unisex"},
+    "kitchen":        {"label": "キッチン用品",       "gender": "unisex"},
+    "seasonal":       {"label": "季節家電",           "gender": "unisex"},
 }
 
 # ── 生成対象。1エントリ = 1記事。cat は CATEGORIES のキー。gender は cat から自動導出。──
@@ -32,5 +42,25 @@ TOPICS = [
     {"theme": "コーデが締まるサングラスの選び方",   "keyword": "サングラス",       "cat": "accessories",    "hits": 4},
     # アウトドア系
     {"theme": "初心者向けソロキャンプ用テント",     "keyword": "テント",           "cat": "outdoor",        "hits": 4},
+    # スイーツ・グルメ
+    {"theme": "お取り寄せスイーツの人気比較",       "keyword": "スイーツ",         "cat": "gourmet",        "hits": 4},
+    {"theme": "ご当地グルメ・お取り寄せの選び方",   "keyword": "お取り寄せグルメ", "cat": "gourmet",        "hits": 4},
+    # メイクコスメ
+    {"theme": "プチプラで選ぶファンデーション",     "keyword": "ファンデーション", "cat": "makeup",         "hits": 4},
+    {"theme": "落ちにくいリップの選び方",           "keyword": "口紅",             "cat": "makeup",         "hits": 4},
+    # フィットネス
+    {"theme": "家トレ向けプロテインの選び方",       "keyword": "プロテイン",       "cat": "fitness",        "hits": 4},
+    {"theme": "自宅で使えるダンベル比較",           "keyword": "ダンベル",         "cat": "fitness",        "hits": 4},
+    # 防災グッズ
+    {"theme": "備えておきたい防災セット比較",       "keyword": "防災セット",       "cat": "disaster",       "hits": 4},
+    {"theme": "長期保存できる非常食の選び方",       "keyword": "非常食",           "cat": "disaster",       "hits": 4},
+    # ペット用品
+    {"theme": "毎日使うペット用品の選び方",         "keyword": "ペット用品",       "cat": "pet",            "hits": 4},
+    # インテリア・収納
+    {"theme": "部屋が片づく収納ラック比較",         "keyword": "収納 ラック",      "cat": "interior",       "hits": 4},
+    # キッチン用品
+    {"theme": "使いやすいフライパンの選び方",       "keyword": "フライパン",       "cat": "kitchen",        "hits": 4},
+    # 季節家電
+    {"theme": "乾燥対策の加湿器比較",               "keyword": "加湿器",           "cat": "seasonal",       "hits": 4},
     # 追加はここに1行ずつ（cat は CATEGORIES のキーから選ぶ）
 ]
