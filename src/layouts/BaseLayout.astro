@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import Jsonld from '../components/Jsonld.astro';
 import { GENDERS } from '../data/taxonomy';
+import { GA_MEASUREMENT_ID, PINTEREST_VERIFY, TWITTER_SITE } from '../consts';
 
 interface Props {
   title: string;
@@ -66,6 +67,7 @@ const breadcrumbLd = breadcrumbs && breadcrumbs.length
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large'} />
+    {PINTEREST_VERIFY && <meta name="p:domain_verify" content={PINTEREST_VERIFY} />}
     <link rel="canonical" href={canonical} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -85,12 +87,21 @@ const breadcrumbLd = breadcrumbs && breadcrumbs.length
     {ogType === 'article' && publishedTime && <meta property="article:published_time" content={publishedTime} />}
     {ogType === 'article' && modifiedTime && <meta property="article:modified_time" content={modifiedTime} />}
     <meta name="twitter:card" content={ogImg ? 'summary_large_image' : 'summary'} />
+    {TWITTER_SITE && <meta name="twitter:site" content={TWITTER_SITE} />}
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     {ogImg && <meta name="twitter:image" content={ogImg} />}
     <Jsonld data={orgLd} />
     <Jsonld data={siteLd} />
     {breadcrumbLd && <Jsonld data={breadcrumbLd} />}
+    {
+      GA_MEASUREMENT_ID && (
+        <>
+          <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`} is:inline />
+          <script is:inline set:html={`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${GA_MEASUREMENT_ID}');`} />
+        </>
+      )
+    }
   </head>
   <body class="min-h-screen font-sans text-ink antialiased">
     <header class="sticky top-0 z-30 border-b border-black/5 bg-cream/85 backdrop-blur">
@@ -124,6 +135,7 @@ const breadcrumbLd = breadcrumbs && breadcrumbs.length
           ))}
           <a href="/" class="hover:text-brand-600">記事一覧</a>
           <a href="/about/" class="hover:text-brand-600">運営者情報</a>
+          <a href="/privacy/" class="hover:text-brand-600">プライバシーポリシー</a>
         </nav>
         <p class="mt-4 text-xs leading-relaxed text-ink/45">
           当サイトはアフィリエイト広告（楽天アフィリエイト等）を利用しています。掲載の価格・在庫・レビューは変動する場合があります。最新の情報は各商品ページをご確認ください。

@@ -110,7 +110,7 @@ const itemListLd = {
                   {p.rank}
                 </span>
                 {p.image ? (
-                  <img src={p.image} alt={p.name} loading="lazy" width="400" height="400" class="mx-auto h-56 w-full object-contain p-5 sm:h-full" />
+                  <img src={p.image} alt={p.name} loading="lazy" width="400" height="400" data-pin-description={`${p.name}｜${data.title}`} class="mx-auto h-56 w-full object-contain p-5 sm:h-full" />
                 ) : (
                   <div class="grid h-56 place-items-center text-sm text-brand-500/40">no image</div>
                 )}
