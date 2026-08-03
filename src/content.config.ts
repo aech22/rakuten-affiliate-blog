@@ -23,8 +23,11 @@ const articles = defineCollection({
   schema: z.object({
     title: z.string(),
     date: z.coerce.date(),
+    updated: z.coerce.date().nullish(),
     description: z.string().nullish(),
     category: z.string().nullish(),
+    categorySlug: z.string().nullish(),
+    gender: z.enum(['men', 'women', 'unisex']).nullish(),
     intro: z.string().nullish(),
     outro: z.string().nullish(),
     noindex: z.boolean().nullish(),

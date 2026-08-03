@@ -1,13 +1,34 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import ArticleCard from '../components/ArticleCard.astro';
+import Jsonld from '../components/Jsonld.astro';
+import { GENDERS, CATEGORIES } from '../data/taxonomy';
 
 const articles = (await getCollection('articles')).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
 );
-const fmtDate = (d: Date) => d.toISOString().slice(0, 10).replace(/-/g, '.');
+// 記事が存在するカテゴリだけチップに出す
+const usedCats = new Set(articles.map((a) => a.data.categorySlug).filter(Boolean));
+const catChips = CATEGORIES.filter((c) => usedCats.has(c.slug));
+
+const site = Astro.site ?? new URL('https://picknavi.net');
+const listLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'picknavi の比較記事一覧',
+  numberOfItems: articles.length,
+  itemListElement: articles.map((a, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: a.data.title,
+    url: new URL(`/articles/${a.id}/`, site).toString(),
+  })),
+};
 ---
 <BaseLayout title="picknavi｜写真とレビューで選ぶ おすすめ商品比較">
+  <Jsonld data={listLd} />
+
   <!-- ヒーロー -->
   <section class="bg-gradient-to-br from-brand-500 to-[#ff9a5a] text-white">
     <div class="mx-auto max-w-5xl px-4 py-14 sm:py-20">
@@ -21,59 +42,81 @@ const fmtDate = (d: Date) => d.toISOString().slice(0, 10).replace(/-/g, '.');
     </div>
   </section>
 
-  <!-- 記事一覧 -->
-  <main class="mx-auto max-w-5xl px-4 py-12">
-    <h2 class="mb-6 flex items-center gap-2 text-xl font-black">
-      <span class="h-5 w-1.5 rounded bg-brand-500"></span>新着の比較記事
-    </h2>
-
-    {articles.length === 0 && <p class="text-ink/50">記事はまだありません。</p>}
-
-    <div class="grid gap-6 sm:grid-cols-2">
-      {
-        articles.map((a) => {
-          const products = a.data.products ?? [];
-          const thumb = products[0]?.image;
-          return (
-            <a
-              href={`/articles/${a.id}/`}
-              class="group flex flex-col overflow-hidden rounded-2xl border border-black/5 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
-            >
-              <div class="relative aspect-[16/9] overflow-hidden bg-brand-50">
-                {thumb ? (
-                  <img
-                    src={thumb}
-                    alt={a.data.title}
-                    loading="lazy"
-                    class="h-full w-full object-contain p-4 transition duration-300 group-hover:scale-105"
-                  />
-                ) : (
-                  <div class="grid h-full place-items-center text-sm text-brand-500/40">no image</div>
-                )}
-                {a.data.category && (
-                  <span class="absolute left-3 top-3 rounded-full bg-white/90 px-3 py-1 text-xs font-black text-brand-600 shadow-sm">
-                    {a.data.category}
-                  </span>
-                )}
-              </div>
-              <div class="flex flex-1 flex-col p-5">
-                <p class="text-xs font-bold text-ink/40">
-                  {fmtDate(a.data.date)}・{products.length}商品を比較
-                </p>
-                <h3 class="mt-1 font-bold leading-snug transition group-hover:text-brand-600">
-                  {a.data.title}
-                </h3>
-                {a.data.description && (
-                  <p class="mt-2 line-clamp-2 text-sm leading-relaxed text-ink/60">{a.data.description}</p>
-                )}
-                <span class="mt-4 inline-flex items-center gap-1 text-sm font-black text-brand-600">
-                  続きを読む <span class="transition group-hover:translate-x-1">→</span>
-                </span>
-              </div>
-            </a>
-          );
-        })
-      }
+  <!-- カテゴリから探す（内部リンク・SEO） -->
+  <section class="mx-auto max-w-5xl px-4 pt-10">
+    <h2 class="mb-4 flex items-center gap-2 text-xl font-black"><span class="h-5 w-1.5 rounded bg-brand-500"></span>カテゴリから探す</h2>
+    <div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
+      {CATEGORIES.map((c) => (
+        <a href={`/categories/${c.slug}/`} class="flex items-center gap-2 rounded-xl border border-black/5 bg-white px-4 py-3 font-bold shadow-sm transition hover:-translate-y-0.5 hover:text-brand-600 hover:shadow">
+          <span class="text-xl">{c.emoji}</span>{c.label}
+        </a>
+      ))}
     </div>
+  </section>
+
+  <!-- 記事一覧 + フィルタ -->
+  <main class="mx-auto max-w-5xl px-4 py-12">
+    <h2 class="mb-4 flex items-center gap-2 text-xl font-black"><span class="h-5 w-1.5 rounded bg-brand-500"></span>比較記事をしぼり込む</h2>
+
+    <!-- 性別タブ -->
+    <div id="gender-tabs" class="flex flex-wrap gap-2">
+      <button type="button" data-gender="all" class="filter-btn is-active rounded-full border border-brand-200 px-4 py-1.5 text-sm font-bold transition">すべて</button>
+      {GENDERS.map((g) => (
+        <button type="button" data-gender={g.slug} class="filter-btn rounded-full border border-brand-200 px-4 py-1.5 text-sm font-bold transition">{g.label}</button>
+      ))}
+    </div>
+
+    <!-- カテゴリチップ -->
+    <div id="cat-chips" class="mt-3 flex flex-wrap gap-2">
+      <button type="button" data-category="all" class="chip-btn is-active rounded-full bg-brand-50 px-3 py-1 text-xs font-bold text-ink/70 transition">すべてのカテゴリ</button>
+      {catChips.map((c) => (
+        <button type="button" data-category={c.slug} class="chip-btn rounded-full bg-brand-50 px-3 py-1 text-xs font-bold text-ink/70 transition">{c.emoji} {c.label}</button>
+      ))}
+    </div>
+
+    <div id="article-grid" class="mt-6 grid gap-6 sm:grid-cols-2">
+      {articles.map((a) => <ArticleCard article={a} />)}
+    </div>
+    <p id="empty-msg" class="mt-6 hidden text-center text-ink/50">該当する記事がありません。</p>
   </main>
+
+  <style>
+    .filter-btn.is-active { background-color: var(--color-brand-500); color: #fff; border-color: var(--color-brand-500); }
+    .chip-btn.is-active { background-color: var(--color-brand-500); color: #fff; }
+  </style>
+
+  <script is:inline>
+    (function () {
+      let gsel = 'all', csel = 'all';
+      const grid = document.getElementById('article-grid');
+      const cards = grid ? Array.from(grid.querySelectorAll('.article-card')) : [];
+      const empty = document.getElementById('empty-msg');
+
+      function apply() {
+        let shown = 0;
+        cards.forEach((el) => {
+          const g = el.getAttribute('data-gender');
+          const c = el.getAttribute('data-category');
+          const ok = (gsel === 'all' || g === gsel) && (csel === 'all' || c === csel);
+          el.style.display = ok ? '' : 'none';
+          if (ok) shown++;
+        });
+        if (empty) empty.classList.toggle('hidden', shown !== 0);
+      }
+      function wire(containerId, attr, set) {
+        const box = document.getElementById(containerId);
+        if (!box) return;
+        box.addEventListener('click', (e) => {
+          const btn = e.target.closest('button[' + attr + ']');
+          if (!btn) return;
+          box.querySelectorAll('button').forEach((b) => b.classList.remove('is-active'));
+          btn.classList.add('is-active');
+          set(btn.getAttribute(attr));
+          apply();
+        });
+      }
+      wire('gender-tabs', 'data-gender', (v) => (gsel = v));
+      wire('cat-chips', 'data-category', (v) => (csel = v));
+    })();
+  </script>
 </BaseLayout>

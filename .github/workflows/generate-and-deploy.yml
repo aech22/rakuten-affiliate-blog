@@ -37,7 +37,7 @@ jobs:
       # 機械的品質ゲート（人手レビューなし）。不合格記事があれば非ゼロ終了でジョブを止め、
       # build / deploy まで到達させない＝低品質記事を公開しない
       - name: Quality gate
-        run: python scripts/quality_check.py content/articles
+        run: python scripts/quality_check.py content/articles --prune
 
       # 品質ゲートを通った記事をリポジトリに蓄積（過去記事を残してSEOを育てる）
       - name: Commit generated articles

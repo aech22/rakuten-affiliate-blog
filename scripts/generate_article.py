@@ -26,9 +26,9 @@ SYSTEM_PROMPT = """あなたは日本語のアフィリエイト比較記事の�
 厳守ルール:
 - 誇大表現・根拠のない最上級表現を使わない（「最安値」「絶対」「No.1」「日本一」「業界最安」等は禁止）。楽天アフィリエイトの規約に沿う。
 - 価格・商品名・URL・レビュー数などの事実は書かない（それらはシステム側が別途埋め込む）。あなたは講評・特徴・向き不向きの文章だけ書く。
-- pros は各商品の spec や用途から自然に言える具体的な長所を3つ（各20〜45字程度）。
-- cons は正直な短所や購入前の注意点を1文。target は「こんな人に向いている」を1文。priceBand は価格帯の一言（例:「手頃価格」「中価格帯」「高価格帯」）。
-- intro は記事全体の導入(2〜3文)。outro はまとめ(2〜3文・選び方の指針)。
+- pros は各商品の spec や用途から自然に言える具体的な長所を3つ（各30〜55字程度・内容を薄くしない）。
+- cons は正直な短所や購入前の注意点を1〜2文で具体的に。target は「こんな人に向いている」を1文で具体的に。priceBand は価格帯の一言（例:「手頃価格」「中価格帯」「高価格帯」）。
+- intro は記事全体の導入(3〜4文)。outro はまとめ(3〜4文・選び方の指針)。
 - 出力は JSON のみ。コードフェンス(```)で囲まない。前置き・後書きを付けない。
 
 出力JSONスキーマ（items の要素数と順序は入力の商品と必ず一致させる）:
@@ -71,7 +71,8 @@ def _llm_prose(products: list, theme: str) -> dict:
             last_err = e
     raise ValueError(f"LLM出力をJSONとして解釈できませんでした: {last_err}")
 
-def build_article(products: list, theme: str, date_str: str, category: str) -> dict:
+def build_article(products: list, theme: str, date_str: str, category: str,
+                  category_slug: str = "", gender: str = "unisex", updated_str: str = "") -> dict:
     """楽天APIの事実データ + LLMの講評文 を1記事分の frontmatter dict にまとめる。"""
     prose = _llm_prose(products, theme)
     items = prose.get("items", [])
@@ -93,15 +94,19 @@ def build_article(products: list, theme: str, date_str: str, category: str) -> d
             "target":        it.get("target", ""),
         }
         out_products.append({k: v for k, v in prod.items() if v not in (None, "", [])})
-    return {
-        "title":       prose.get("title") or theme,
-        "date":        date_str,
-        "description": prose.get("description", ""),
-        "category":    category,
-        "intro":       prose.get("intro", ""),
-        "outro":       prose.get("outro", ""),
-        "products":    out_products,
+    fm = {
+        "title":        prose.get("title") or theme,
+        "date":         date_str,                    # 公開日（固定URLでは初回のみ確定し以降維持）
+        "updated":      updated_str or date_str,     # 最終更新日（毎日の再生成で更新）
+        "description":  prose.get("description", ""),
+        "category":     category,                    # 表示ラベル（例: メンズファッション）
+        "categorySlug": category_slug,               # 結合キー（例: mens-fashion）
+        "gender":       gender,                      # men | women | unisex
+        "intro":        prose.get("intro", ""),
+        "outro":        prose.get("outro", ""),
+        "products":     out_products,
     }
+    return {k: v for k, v in fm.items() if v not in (None, "")}
 
 def to_markdown(fm: dict) -> str:
     """frontmatter dict を Astro が読める Markdown（frontmatterのみ・本文なし）へ。"""

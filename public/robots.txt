@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://picknavi.net/sitemap-index.xml

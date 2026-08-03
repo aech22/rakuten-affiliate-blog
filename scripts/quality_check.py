@@ -28,6 +28,11 @@ def check(md: str) -> list:
     if not fm.get("title") or not fm.get("date"):
         errors.append("frontmatter に title / date が無い")
 
+    if not fm.get("categorySlug"):
+        errors.append("categorySlug が無い")
+    if fm.get("gender") not in ("men", "women", "unisex"):
+        errors.append(f"gender が不正（{fm.get('gender')!r}）")
+
     products = fm.get("products") or []
     if not products:
         errors.append("products が空")
@@ -48,20 +53,35 @@ def check(md: str) -> list:
         errors.append("禁止語を含む: " + ", ".join(hit))
     return errors
 
-def main(dir_path: str) -> None:
-    failed = False
+def main(dir_path: str, prune: bool = False) -> None:
+    """prune=False（ローカル/既定）: NGが1件でもあれば非ゼロ終了。
+       prune=True（日次workflow）: NG記事だけ除外して他は公開し、全滅時のみ失敗。
+       →1記事の講評が短い等でサイト全体の公開が止まるのを防ぐ。"""
     files = sorted(Path(dir_path).glob("*.md"))
     if not files:
         print(f"[WARN] {dir_path} に記事がありません")
+    ok_count, ng = 0, []
     for path in files:
         errors = check(path.read_text(encoding="utf-8"))
         if errors:
-            failed = True
+            ng.append(path)
             print(f"[NG] {path.name}: {'; '.join(errors)}")
         else:
+            ok_count += 1
             print(f"[OK] {path.name}")
-    if failed:
-        sys.exit(1)   # 非ゼロ終了で workflow を止める（＝公開しない）
+
+    if prune:
+        for path in ng:
+            path.unlink()
+            print(f"[PRUNED] {path.name} を今回の公開から除外（次回再生成で再挑戦）")
+        if ok_count == 0:
+            print("[FATAL] 公開可能な記事が0件のため中止")
+            sys.exit(1)
+        return
+    if ng:
+        sys.exit(1)   # 非ゼロ終了で workflow を止める（厳格モード）
 
 if __name__ == "__main__":
-    main(sys.argv[1] if len(sys.argv) > 1 else "content/articles")
+    args = [a for a in sys.argv[1:] if not a.startswith("--")]
+    prune = "--prune" in sys.argv
+    main(args[0] if args else "content/articles", prune=prune)
