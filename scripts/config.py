@@ -1,4 +1,8 @@
 # scripts/config.py
+# 1日に新規追加する記事の上限（ドリップ）。既存記事は毎日そのまま更新され、
+# TOPIC_POOL の未公開トピックがこの本数だけ毎日 追加生成される（SEO健全な自然増）。
+DAILY_NEW_LIMIT = 1
+
 # ── カテゴリ体系（大元の性別軸 gender × ジャンル軸 category）──
 # gender: "men" | "women" | "unisex"
 # CATEGORIES の slug は Astro 側 src/data/taxonomy.ts と一致させること（記事URL・カテゴリページの結合キー）。
@@ -74,4 +78,67 @@ TOPICS = [
     {"theme": "大容量モバイルバッテリー比較",       "keyword": "モバイルバッテリー", "cat": "daily",         "hits": 4},
     {"theme": "自宅で楽しむコーヒー豆の選び方",     "keyword": "コーヒー豆",       "cat": "gourmet",        "hits": 4},
     # 追加はここに1行ずつ（cat は CATEGORIES のキーから選ぶ）
+]
+
+# ── トピックプール（未公開の候補）──
+# ここから毎日 DAILY_NEW_LIMIT 本ずつ「まだ記事が無いもの」を自動で追加生成する。
+# 公開済みになったら通常の更新対象になる。枯渇したら良質キーワードを追記して補充する。
+TOPIC_POOL = [
+    # 美容系
+    {"theme": "乾燥肌向け化粧水の選び方",           "keyword": "化粧水",           "cat": "beauty",         "hits": 4},
+    {"theme": "紫外線対策の日焼け止め比較",         "keyword": "日焼け止め",       "cat": "beauty",         "hits": 4},
+    {"theme": "毛穴ケアできるクレンジング比較",     "keyword": "クレンジング",     "cat": "beauty",         "hits": 4},
+    # 日常系
+    {"theme": "花粉・ハウスダスト対策の空気清浄機比較", "keyword": "空気清浄機",   "cat": "daily",          "hits": 4},
+    {"theme": "速乾で選ぶヘアドライヤー比較",       "keyword": "ドライヤー",       "cat": "daily",          "hits": 4},
+    {"theme": "コスパで選ぶ電動歯ブラシ比較",       "keyword": "電動歯ブラシ",     "cat": "daily",          "hits": 4},
+    {"theme": "体組成計・体重計の選び方",           "keyword": "体重計",           "cat": "daily",          "hits": 4},
+    # メンズファッション
+    {"theme": "着回せるメンズTシャツの選び方",      "keyword": "メンズ Tシャツ",   "cat": "mens-fashion",   "hits": 4},
+    {"theme": "通勤に使えるメンズリュック比較",     "keyword": "メンズ リュック",  "cat": "mens-fashion",   "hits": 4},
+    {"theme": "本革メンズベルトの選び方",           "keyword": "メンズ ベルト",    "cat": "mens-fashion",   "hits": 4},
+    # レディースファッション
+    {"theme": "着回せるレディースワンピース比較",   "keyword": "レディース ワンピース", "cat": "ladies-fashion", "hits": 4},
+    {"theme": "冬のレディースコートの選び方",       "keyword": "レディース コート", "cat": "ladies-fashion", "hits": 4},
+    {"theme": "疲れにくいパンプスの選び方",         "keyword": "パンプス",         "cat": "ladies-fashion", "hits": 4},
+    # 小物系
+    {"theme": "普段使いのネックレスの選び方",       "keyword": "ネックレス",       "cat": "accessories",    "hits": 4},
+    {"theme": "暖かいマフラー・ストールの選び方",   "keyword": "マフラー",         "cat": "accessories",    "hits": 4},
+    {"theme": "コーデが決まる帽子の選び方",         "keyword": "帽子",             "cat": "accessories",    "hits": 4},
+    # アウトドア系
+    {"theme": "季節で選ぶ寝袋・シュラフ比較",       "keyword": "寝袋",             "cat": "outdoor",        "hits": 4},
+    {"theme": "キャンプ用LEDランタンの選び方",      "keyword": "ランタン",         "cat": "outdoor",        "hits": 4},
+    {"theme": "折りたたみアウトドアテーブル比較",   "keyword": "アウトドアテーブル", "cat": "outdoor",       "hits": 4},
+    # スイーツ・グルメ
+    {"theme": "お取り寄せラーメンの人気比較",       "keyword": "ラーメン お取り寄せ", "cat": "gourmet",      "hits": 4},
+    {"theme": "お取り寄せ冷凍餃子の選び方",         "keyword": "冷凍餃子",         "cat": "gourmet",        "hits": 4},
+    {"theme": "手軽なドリップコーヒーの選び方",     "keyword": "ドリップコーヒー", "cat": "gourmet",        "hits": 4},
+    # メイクコスメ
+    {"theme": "捨て色なしアイシャドウパレット比較", "keyword": "アイシャドウ",     "cat": "makeup",         "hits": 4},
+    {"theme": "にじみにくいマスカラの選び方",       "keyword": "マスカラ",         "cat": "makeup",         "hits": 4},
+    {"theme": "崩れにくい化粧下地の選び方",         "keyword": "化粧下地",         "cat": "makeup",         "hits": 4},
+    # フィットネス
+    {"theme": "初心者向け腹筋ローラーの選び方",     "keyword": "腹筋ローラー",     "cat": "fitness",        "hits": 4},
+    {"theme": "自宅で使うトレーニングチューブ比較", "keyword": "トレーニングチューブ", "cat": "fitness",     "hits": 4},
+    {"theme": "続けやすいヨガマットの選び方",       "keyword": "ヨガマット",       "cat": "fitness",        "hits": 4},
+    # 防災グッズ
+    {"theme": "手回し充電できる防災ラジオ比較",     "keyword": "防災ラジオ",       "cat": "disaster",       "hits": 4},
+    {"theme": "備えておく携帯・簡易トイレの選び方", "keyword": "携帯トイレ",       "cat": "disaster",       "hits": 4},
+    {"theme": "防災用LED懐中電灯の選び方",          "keyword": "懐中電灯",         "cat": "disaster",       "hits": 4},
+    # ペット用品
+    {"theme": "省スペースなキャットタワー比較",     "keyword": "キャットタワー",   "cat": "pet",            "hits": 4},
+    {"theme": "愛犬に合う首輪・ハーネスの選び方",   "keyword": "犬 ハーネス",      "cat": "pet",            "hits": 4},
+    {"theme": "見守りペットカメラの選び方",         "keyword": "ペットカメラ",     "cat": "pet",            "hits": 4},
+    # インテリア・収納
+    {"theme": "遮光・断熱カーテンの選び方",         "keyword": "カーテン",         "cat": "interior",       "hits": 4},
+    {"theme": "洗えるラグ・カーペットの選び方",     "keyword": "ラグ",             "cat": "interior",       "hits": 4},
+    {"theme": "一人暮らし向けベッドフレーム比較",   "keyword": "ベッドフレーム",   "cat": "interior",       "hits": 4},
+    # キッチン用品
+    {"theme": "切れ味で選ぶ包丁の選び方",           "keyword": "包丁",             "cat": "kitchen",        "hits": 4},
+    {"theme": "家族で使うホットプレート比較",       "keyword": "ホットプレート",   "cat": "kitchen",        "hits": 4},
+    {"theme": "こんがり焼けるトースター比較",       "keyword": "トースター",       "cat": "kitchen",        "hits": 4},
+    # 季節家電
+    {"theme": "一人暮らし向けこたつの選び方",       "keyword": "こたつ",           "cat": "seasonal",       "hits": 4},
+    {"theme": "梅雨対策の除湿機比較",               "keyword": "除湿機",           "cat": "seasonal",       "hits": 4},
+    {"theme": "足元を温めるヒーターの選び方",       "keyword": "ヒーター",         "cat": "seasonal",       "hits": 4},
 ]
