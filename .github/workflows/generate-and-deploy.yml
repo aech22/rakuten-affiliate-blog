@@ -79,7 +79,6 @@ jobs:
       # 投稿キット（テキスト＋2:3ピン画像）を生成して Google Drive に保存。
       # Drive のOAuth情報(secrets)が未設定なら丸ごとスキップ＝オプトイン。設定時のみ依存を入れる。
       - name: Social kit → Google Drive (optional)
-        if: ${{ github.event.inputs.skip_generate != 'true' }}
         continue-on-error: true
         env:
           GDRIVE_CLIENT_ID:     ${{ secrets.GDRIVE_CLIENT_ID }}

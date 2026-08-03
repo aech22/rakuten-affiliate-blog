@@ -40,6 +40,7 @@ def main(out_path: str) -> None:
             "画像URL": image,
         })
     fields = ["カテゴリ", "タイトル", "記事URL", "ピンタイトル", "ピン説明文", "X投稿文", "画像URL"]
+    Path(out_path).parent.mkdir(parents=True, exist_ok=True)   # social/ が無い場合に作る
     with open(out_path, "w", encoding="utf-8-sig", newline="") as f:
         w = csv.DictWriter(f, fieldnames=fields)
         w.writeheader()
