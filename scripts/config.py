@@ -62,5 +62,16 @@ TOPICS = [
     {"theme": "使いやすいフライパンの選び方",       "keyword": "フライパン",       "cat": "kitchen",        "hits": 4},
     # 季節家電
     {"theme": "乾燥対策の加湿器比較",               "keyword": "加湿器",           "cat": "seasonal",       "hits": 4},
+    # ── 第2弾（カテゴリ拡充）──
+    {"theme": "軽くて涼しいアウトドアチェア比較",   "keyword": "アウトドア チェア", "cat": "outdoor",       "hits": 4},
+    {"theme": "保冷力で選ぶクーラーボックス",       "keyword": "クーラーボックス", "cat": "outdoor",        "hits": 4},
+    {"theme": "掃除がラクな猫用トイレの選び方",     "keyword": "猫 トイレ",        "cat": "pet",            "hits": 4},
+    {"theme": "愛犬が喜ぶドッグフードの選び方",     "keyword": "ドッグフード",     "cat": "pet",            "hits": 4},
+    {"theme": "在宅ワークが捗るパソコンデスク比較", "keyword": "パソコンデスク",   "cat": "interior",       "hits": 4},
+    {"theme": "時短調理の電気圧力鍋比較",           "keyword": "電気圧力鍋",       "cat": "kitchen",        "hits": 4},
+    {"theme": "静音で選ぶ扇風機・サーキュレーター", "keyword": "扇風機",           "cat": "seasonal",       "hits": 4},
+    {"theme": "冬の必需品 電気毛布の選び方",        "keyword": "電気毛布",         "cat": "seasonal",       "hits": 4},
+    {"theme": "大容量モバイルバッテリー比較",       "keyword": "モバイルバッテリー", "cat": "daily",         "hits": 4},
+    {"theme": "自宅で楽しむコーヒー豆の選び方",     "keyword": "コーヒー豆",       "cat": "gourmet",        "hits": 4},
     # 追加はここに1行ずつ（cat は CATEGORIES のキーから選ぶ）
 ]

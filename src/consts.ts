@@ -9,3 +9,6 @@ export const PINTEREST_VERIFY = '58cff8b4406d806c92d5571422abefa9';
 
 // X(Twitter) の公式アカウント（例: '@picknavi_jp'）。カード下部に表示される。
 export const TWITTER_SITE = '';
+
+// Google Search Console のHTMLタグ確認コード（<meta name="google-site-verification" content="◯◯◯"> の content値）。
+export const SEARCH_CONSOLE_VERIFY = '';

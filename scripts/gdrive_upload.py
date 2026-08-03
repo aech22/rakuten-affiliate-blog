@@ -76,6 +76,15 @@ def main() -> None:
             upsert(img, pins_folder, "image/jpeg")
             n += 1
         print(f"pins uploaded: {n}")
+
+    posts_dir = Path("social/posts")
+    if posts_dir.exists():
+        posts_folder = ensure_folder("投稿文", folder)
+        n = 0
+        for txt in sorted(posts_dir.glob("*.txt")):
+            upsert(txt, posts_folder, "text/plain")
+            n += 1
+        print(f"posts uploaded: {n}")
     print("done")
 
 if __name__ == "__main__":

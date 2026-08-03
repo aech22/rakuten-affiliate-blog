@@ -2,7 +2,7 @@
 import '../styles/global.css';
 import Jsonld from '../components/Jsonld.astro';
 import { GENDERS } from '../data/taxonomy';
-import { GA_MEASUREMENT_ID, PINTEREST_VERIFY, TWITTER_SITE } from '../consts';
+import { GA_MEASUREMENT_ID, PINTEREST_VERIFY, TWITTER_SITE, SEARCH_CONSOLE_VERIFY } from '../consts';
 
 interface Props {
   title: string;
@@ -68,6 +68,7 @@ const breadcrumbLd = breadcrumbs && breadcrumbs.length
     <meta name="description" content={description} />
     <meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large'} />
     {PINTEREST_VERIFY && <meta name="p:domain_verify" content={PINTEREST_VERIFY} />}
+    {SEARCH_CONSOLE_VERIFY && <meta name="google-site-verification" content={SEARCH_CONSOLE_VERIFY} />}
     <link rel="canonical" href={canonical} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
