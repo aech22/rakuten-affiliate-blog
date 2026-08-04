@@ -12,3 +12,6 @@ export const TWITTER_SITE = '';
 
 // Google Search Console のHTMLタグ確認コード（<meta name="google-site-verification" content="◯◯◯"> の content値）。
 export const SEARCH_CONSOLE_VERIFY = 'tacSjOdy0Bcf5FU6fGROr-ugbH3UQ7zwz41oHxakpx4';
+
+// Shifty 導線（ShiftyPromo.astro）の流入元計測用スラッグ。サイトごとに一意にする。
+export const SHIFTY_UTM_SOURCE = 'picknavi';
