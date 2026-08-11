@@ -52,7 +52,11 @@
 
 ## 投稿キットの Drive 自動保存
 
-日次 workflow が `gen_social_kit.py`（投稿テキストCSV）＋ `gen_pins.py`（1000×1500 ピン画像）＋ `gdrive_upload.py` を実行し、Drive の「picknavi_投稿キット」へ upsert。**Drive secrets 未設定なら丸ごとスキップ（オプトイン）。**
+日次 workflow が **別リポジトリ [aech22/pinterest-kit](https://github.com/aech22/pinterest-kit) を clone して** `gen_pins.py`（1000×1500 ピン画像）→ `gen_social_kit.py`（投稿文CSV＋投稿文テキスト）の順に実行し、`gdrive_upload.py` で Drive の「picknavi_投稿キット」へ upsert。**Drive secrets 未設定なら丸ごとスキップ（オプトイン）。**
+
+- **生成スクリプトをこのリポジトリに複製しない。** 2026-08-12 まで `scripts/gen_social_kit.py` + `scripts/gen_pins.py` という複製が日次で動いていたが、Pinterest運用仕様が「1記事3バリアント」へ変わった後も複製側は旧仕様のままで、**Drive には旧仕様の投稿文が毎日上書きされ続けていた**。この2本は退役・削除済み
+- CI では pinterest-kit の既定パス（作者のローカル）を環境変数で差し替える: `PINKIT_OUT` / `PINKIT_ARTICLES_PICKNAVI`。`--site picknavi --no-calendar` で単一サイト実行にする（カレンダーは全サイト横断の表なので CI では書かない）
+- 重複台帳 `pins_ledger.json` は CI では持ち回さない。毎回全記事を生成し直すため、重複検出はその1回の実行内で完結する
 
 - 個人 Gmail は純サービスアカウントだと容量0で upload 失敗 → **ユーザー自身の OAuth** を採用
 - フル `drive` スコープ＋同意画面「テスト」状態は**リフレッシュトークンが7日で失効**するため、**`drive.file` スコープ＋アプリが自前フォルダ管理＋同意画面を本番公開**の構成にしてある

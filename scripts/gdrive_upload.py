@@ -1,5 +1,9 @@
 # scripts/gdrive_upload.py
-# 投稿キット（social/social_kit.csv と social/pins/*.jpg）を Google Drive の指定フォルダへ upsert する。
+# 投稿キット（social_kit.csv / pins/*.jpg / posts/*.txt）を Google Drive の指定フォルダへ upsert する。
+# 生成そのものは別リポジトリ aech22/pinterest-kit が行う（2026-08-12〜。それ以前は
+# scripts/gen_social_kit.py + gen_pins.py だったが、Pinterest運用仕様の 3バリアント化に
+# 追随できず旧仕様のまま Drive へ上がり続けていたため退役させた）。
+# 読み取り元は KIT_DIR で差し替えられる（既定 social/picknavi = pinterest-kit の PINKIT_OUT 配下）。
 # 個人Gmail向けに「あなた自身のOAuth」で動く（ファイルはあなた所有＝あなたの容量を使う）。
 # 4つの環境変数が未設定なら何もせず終了＝完全オプトイン。
 from __future__ import annotations
@@ -10,6 +14,7 @@ from pathlib import Path
 # アプリ自身が「picknavi_投稿キット」フォルダを作って管理するので、フォルダIDの登録は不要。
 CREDS = ["GDRIVE_CLIENT_ID", "GDRIVE_CLIENT_SECRET", "GDRIVE_REFRESH_TOKEN"]
 ROOT_FOLDER_NAME = "picknavi_投稿キット"
+KIT_DIR = Path(os.environ.get("KIT_DIR") or "social/picknavi")
 
 def main() -> None:
     if not all(os.environ.get(k) for k in CREDS):
@@ -77,11 +82,11 @@ def main() -> None:
                                fields="id", supportsAllDrives=True).execute()
             print(f"created: {path.name}")
 
-    csv_path = Path("social/social_kit.csv")
+    csv_path = KIT_DIR / "social_kit.csv"
     if csv_path.exists():
         upsert(csv_path, folder, "text/csv")
 
-    pins_dir = Path("social/pins")
+    pins_dir = KIT_DIR / "pins"
     if pins_dir.exists():
         pins_folder = ensure_folder("pins", folder)
         names = set()
@@ -91,7 +96,7 @@ def main() -> None:
         prune_stale(pins_folder, names)
         print(f"pins uploaded: {len(names)}")
 
-    posts_dir = Path("social/posts")
+    posts_dir = KIT_DIR / "posts"
     if posts_dir.exists():
         posts_folder = ensure_folder("投稿文", folder)
         names = set()

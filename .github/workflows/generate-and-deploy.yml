@@ -76,22 +76,36 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
 
-      # 投稿キット（テキスト＋2:3ピン画像）を生成して Google Drive に保存。
+      # 投稿キット（3バリアントの投稿文＋2:3ピン画像）を生成して Google Drive に保存。
       # Drive のOAuth情報(secrets)が未設定なら丸ごとスキップ＝オプトイン。設定時のみ依存を入れる。
+      #
+      # 生成の正本は別リポジトリ aech22/pinterest-kit（Pinterest運用仕様 §7）。ここに複製しない
+      # ——2026-08-12 まで scripts/gen_social_kit.py + gen_pins.py という複製が動いており、
+      # 仕様が 1記事3バリアントへ変わった後も旧仕様のまま Drive を上書きし続けていた。
+      #
+      # 重複台帳(pins_ledger.json)は CI では持ち回さない。毎回すべての記事を生成し直すので
+      # 「別ファイル名で同一バイト」の検出はその1回の実行の中で完結する（台帳は実行中メモリ上に
+      # 全ピンぶん積まれる）。永続化しても増える検出は無い。
       - name: Social kit → Google Drive (optional)
         continue-on-error: true
         env:
           GDRIVE_CLIENT_ID:     ${{ secrets.GDRIVE_CLIENT_ID }}
           GDRIVE_CLIENT_SECRET: ${{ secrets.GDRIVE_CLIENT_SECRET }}
           GDRIVE_REFRESH_TOKEN: ${{ secrets.GDRIVE_REFRESH_TOKEN }}
+          # pinterest-kit の既定パスは作者のローカル環境なので、CI では明示的に差し替える
+          PINKIT_OUT:               ${{ github.workspace }}/social
+          PINKIT_ARTICLES_PICKNAVI: ${{ github.workspace }}/content/articles
         run: |
           if [ -z "$GDRIVE_REFRESH_TOKEN" ]; then
             echo "Google Drive 未設定のためスキップ"; exit 0
           fi
           sudo apt-get update -qq && sudo apt-get install -y -qq fonts-noto-cjk
-          pip install --quiet Pillow google-auth google-auth-oauthlib google-api-python-client
-          python scripts/gen_social_kit.py social/social_kit.csv
-          python scripts/gen_pins.py social/pins
+          pip install --quiet Pillow PyYAML requests google-auth google-auth-oauthlib google-api-python-client
+          git clone --depth 1 -q https://github.com/aech22/pinterest-kit.git "$RUNNER_TEMP/pinterest-kit"
+          # gen_pins.py を先に実行する（CSV は実在するピン画像の行だけを出すため）
+          python "$RUNNER_TEMP/pinterest-kit/gen_pins.py" --site picknavi
+          # カレンダーは全サイト横断の週次配分表なので、picknavi しか見えない CI では書かない
+          python "$RUNNER_TEMP/pinterest-kit/gen_social_kit.py" --site picknavi --no-calendar
           python scripts/gdrive_upload.py
 
       # 新規記事を X に自動投稿（X APIキー secrets が未設定ならスクリプト側でスキップ）。
