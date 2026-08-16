@@ -2,6 +2,7 @@
 # 事実データ（商品名・価格・画像・アフィリンク・レビュー）は楽天APIの値をそのまま使い、
 # LLM(Haiku)には「講評文（intro/outro/長所/短所/向き不向き）」だけを JSON で書かせる。
 # → 価格やURLのLLM誤記が構造的に起きない。画像・商品名リンクはレンダリング側が構造データから描く。
+from __future__ import annotations
 import argparse, json, re
 import anthropic
 import yaml
@@ -112,6 +113,68 @@ def build_article(products: list, theme: str, date_str: str, category: str,
         "guide":        guide,                       # 選び方のポイント（[{point,desc}]）
         "outro":        prose.get("outro", ""),
         "faqs":         faqs,                        # よくある質問（[{q,a}]・FAQ構造化データ用）
+        "products":     out_products,
+    }
+    return {k: v for k, v in fm.items() if v not in (None, "", [])}
+
+# --- 商品が入れ替わっていない記事はLLMを呼ばずに事実だけ載せ替える ------------------
+# 日次実行の差分を実測すると、毎日変わるのは価格とレビュー数（どちらも楽天APIの値）で、
+# 商品そのものが入れ替わる記事は42本中2〜6本しかない。残りをLLMに書き直させても講評文の
+# 内容は変わらず、priceBand のような短いラベルが日替わりで揺れるだけだった
+# （2026-08-09の差分: price 4行に対し priceBand 46行）。その分の呼び出しを止める。
+# 価格・在庫を24時間以内に更新する楽天規約は、楽天APIの取得を毎日続けることで満たす。
+
+def _product_key(name, shop) -> tuple:
+    return ((name or "").strip(), (shop or "").strip())
+
+def reusable_prose(products: list, prev: dict | None) -> bool:
+    """既存記事の講評文をそのまま使えるか（商品が順序ごと一致し、講評文が揃っているか）。"""
+    if not prev:
+        return False
+    prev_products = prev.get("products") or []
+    if not prev_products or len(prev_products) != len(products):
+        return False
+    for p, q in zip(products, prev_products):
+        # 順序も一致を求める。pros/cons/target は位置で商品に対応するため、並びが変われば
+        # そのまま流用すると別の商品の講評が付く。
+        if _product_key(p.get("itemName"), p.get("shopName")) != _product_key(q.get("name"), q.get("shop")):
+            return False
+        if not (q.get("pros") and q.get("cons") and q.get("target")):
+            return False
+    return all(prev.get(k) for k in ("title", "intro", "outro"))
+
+def rebuild_article(products: list, prev: dict, date_str: str, category: str,
+                    category_slug: str = "", gender: str = "unisex", updated_str: str = "") -> dict:
+    """LLMを呼ばずに、既存の講評文へ楽天APIの最新の事実（価格・レビュー等）だけを載せ替える。"""
+    out_products = []
+    for i, (p, q) in enumerate(zip(products, prev.get("products") or [])):
+        prod = {
+            "rank":          i + 1,
+            "name":          p.get("itemName", ""),
+            "price":         p.get("itemPrice"),
+            "image":         _first_image(p),
+            "url":           p.get("affiliateUrl") or p.get("itemUrl", ""),
+            "shop":          p.get("shopName", ""),
+            "reviewAverage": p.get("reviewAverage"),
+            "reviewCount":   p.get("reviewCount"),
+            "priceBand":     q.get("priceBand", ""),
+            "pros":          (q.get("pros") or [])[:3],
+            "cons":          q.get("cons", ""),
+            "target":        q.get("target", ""),
+        }
+        out_products.append({k: v for k, v in prod.items() if v not in (None, "", [])})
+    fm = {
+        "title":        prev.get("title", ""),
+        "date":         date_str,
+        "updated":      updated_str or date_str,
+        "description":  prev.get("description", ""),
+        "category":     category,                    # 分類はtaxonomy側の変更に追随させる
+        "categorySlug": category_slug,
+        "gender":       gender,
+        "intro":        prev.get("intro", ""),
+        "guide":        prev.get("guide") or [],
+        "outro":        prev.get("outro", ""),
+        "faqs":         prev.get("faqs") or [],
         "products":     out_products,
     }
     return {k: v for k, v in fm.items() if v not in (None, "", [])}
