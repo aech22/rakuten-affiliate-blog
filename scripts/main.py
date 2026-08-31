@@ -17,9 +17,27 @@ JST = datetime.timezone(datetime.timedelta(hours=9))
 # 出力先は常にリポジトリルート直下の content/articles（scripts の1つ上）
 OUT_DIR = Path(__file__).resolve().parent.parent / "content" / "articles"
 
-def slugify(theme: str) -> str:
-    # 日本語は isalnum()=True のため保持される。URLは固定（トピック単位・日付を含めない＝重複コンテンツ回避）。
+def legacy_slugify(theme: str) -> str:
+    # 2026-08-31 まで使っていた採番。日本語は isalnum()=True のため保持され、URLではパーセント
+    # エンコードされる。この関数は「既にこの名前で公開されている記事」を見つけるためだけに残す。
     return "".join(c if c.isalnum() else "-" for c in theme).strip("-")[:60]
+
+def article_path(topic: dict) -> Path:
+    """記事ファイルのパスを決める。ファイル名がそのまま記事URLのスラッグになる。
+
+    公開済み記事のURLは変えない（変えると被リンクとインデックスを捨てることになる）ので、
+    日本語スラッグのファイルが既にあるならそれを使い続ける。無ければ config.py の
+    英数 slug で作る。結果として**次に新規生成される記事から英数URLに切り替わる**。
+    """
+    legacy = OUT_DIR / f"{legacy_slugify(topic['theme'])}.md"
+    if legacy.exists():
+        return legacy
+    slug = topic.get("slug")
+    if not slug:
+        # config.py の assert で弾かれるはずだが、日次ジョブを落とさないための保険。
+        print(f"[WARN] slug 未設定のため日本語スラッグで作成します: {topic['theme']}")
+        return legacy
+    return OUT_DIR / f"{slug}.md"
 
 def _existing_frontmatter(path: Path) -> dict | None:
     """既存記事の frontmatter を読む（無い・壊れている場合は None）。"""
@@ -45,7 +63,7 @@ def gen_one(topic: dict, today: str) -> tuple[Path | None, bool]:
     if not products:
         print(f"[SKIP] {topic['theme']}: 商品が0件")
         return None, False
-    path = OUT_DIR / f"{slugify(topic['theme'])}.md"
+    path = article_path(topic)
     prev = _existing_frontmatter(path)
     publish_date = _publish_date(prev) or today                   # 初回のみ today、以降は維持
     reused = reusable_prose(products, prev)
@@ -67,7 +85,7 @@ def main() -> None:
 
     # 公開済み(TOPICS)は毎日すべて更新。TOPIC_POOL の未公開分は 1日 DAILY_NEW_LIMIT 本だけ追加。
     for topic in list(TOPICS) + list(TOPIC_POOL):
-        path = OUT_DIR / f"{slugify(topic['theme'])}.md"
+        path = article_path(topic)
         is_new = not path.exists()
         if is_new and new_budget <= 0:
             continue                                              # 本日の新規上限に到達→次回以降に回す
