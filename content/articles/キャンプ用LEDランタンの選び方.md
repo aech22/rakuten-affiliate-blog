@@ -1,7 +1,7 @@
 ---
 title: キャンプ用LEDランタンの選び方｜用途別おすすめ比較
 date: '2026-08-29'
-updated: '2026-09-02'
+updated: '2026-09-03'
 description: キャンプや防災に活躍するLEDランタンの選び方を徹底解説。複数の充電方式、明るさ、携帯性など、用途に合った商品の見分け方をご紹介します。
 category: アウトドア系
 categorySlug: outdoor
