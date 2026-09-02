@@ -7,8 +7,8 @@ RAKUTEN_ACCESS_KEY = os.environ["RAKUTEN_ACCESS_KEY"]
 AFFILIATE_ID       = os.environ["RAKUTEN_AFFILIATE_ID"]
 # 新APIは Referer と Origin の両方が必須（片方だけだと REQUEST_CONTEXT_BODY_HTTP_REFERRER_MISSING）。
 # 登録した「Allowed websites」ドメインと一致させる。
-RAKUTEN_REFERER    = os.environ.get("RAKUTEN_REFERER", "https://aech22.github.io/rakuten-affiliate-blog/")
-RAKUTEN_ORIGIN     = os.environ.get("RAKUTEN_ORIGIN", "https://aech22.github.io")
+RAKUTEN_REFERER    = os.environ.get("RAKUTEN_REFERER", "https://picknavi.net/")
+RAKUTEN_ORIGIN     = os.environ.get("RAKUTEN_ORIGIN", "https://picknavi.net")
 
 # 新コンソール(Rakuten Developers)発行の UUID Application ID + Access Key に対応した
 # 新エンドポイント(2026-07-01)。旧 app.rakuten.co.jp/services/api/...20220601 は
