@@ -1,7 +1,7 @@
 ---
 title: キャンプ用LEDランタンの選び方｜用途別おすすめ比較
 date: '2026-08-29'
-updated: '2026-09-01'
+updated: '2026-09-02'
 description: キャンプや防災に活躍するLEDランタンの選び方を徹底解説。複数の充電方式、明るさ、携帯性など、用途に合った商品の見分け方をご紹介します。
 category: アウトドア系
 categorySlug: outdoor
@@ -30,7 +30,7 @@ products:
   url: https://hb.afl.rakuten.co.jp/hgc/g00rehxn.xqh3mbf3.g00rehxn.xqh3n997/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fdabada%2Fled-lantan-63%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fdabada%2Fi%2F10000536%2F&rafcid=wsc_i_is_a8fd1ed2-8341-41cd-8d5e-348dd7737f5d
   shop: DABADAストア 楽天市場店
   reviewAverage: 4.34
-  reviewCount: 5250
+  reviewCount: 5251
   priceBand: 手頃価格
   pros:
   - 5種類の充電方式（USB・ソーラー・手回し・乾電池・シガーソケット）に対応し、どんな環境でも電源確保が可能。
@@ -45,7 +45,7 @@ products:
   url: https://hb.afl.rakuten.co.jp/hgc/g00tnrsn.xqh3ma24.g00tnrsn.xqh3n78e/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Flatuna%2F10000020%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Flatuna%2Fi%2F10000112%2F&rafcid=wsc_i_is_a8fd1ed2-8341-41cd-8d5e-348dd7737f5d
   shop: ラチュナ キングジム直営店
   reviewAverage: 4.56
-  reviewCount: 3235
+  reviewCount: 3241
   priceBand: 手頃価格
   pros:
   - タッチセンサー搭載で暗闇でも片手操作でき、授乳やおむつ替えなど細かい作業時に両手が自由になる。
@@ -59,8 +59,8 @@ products:
   image: https://thumbnail.image.rakuten.co.jp/@0_mall/wakui-shop/cabinet/new-thumbnail/10000227-2022.jpg?_ex=400x400
   url: https://hb.afl.rakuten.co.jp/hgc/g00rzi1n.xqh3m20a.g00rzi1n.xqh3nae6/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fwakui-shop%2F10000227%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fwakui-shop%2Fi%2F10000227%2F&rafcid=wsc_i_is_a8fd1ed2-8341-41cd-8d5e-348dd7737f5d
   shop: ワクイショップ 楽天市場店
-  reviewAverage: 4.67
-  reviewCount: 2264
+  reviewAverage: 4.66
+  reviewCount: 2265
   priceBand: 手頃価格
   pros:
   - 人感センサー搭載で必要な時だけ自動点灯し、電池の消費を抑えられるため長期間の待機に強い。
