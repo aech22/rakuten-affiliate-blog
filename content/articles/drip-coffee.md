@@ -1,7 +1,7 @@
 ---
 title: 手軽なドリップコーヒー・ドリップバッグの選び方と比較ガイド
 date: '2026-09-02'
-updated: '2026-09-03'
+updated: '2026-09-04'
 description: 毎日のコーヒータイムに欠かせないドリップコーヒー。訳あり品から飲み比べセット、大容量福袋まで、用途や予算に合わせた選び方のコツと、主要商品の特徴をまとめました。
 category: スイーツ・グルメ
 categorySlug: gourmet
@@ -45,7 +45,7 @@ products:
   url: https://hb.afl.rakuten.co.jp/hgc/g00twesn.xqh3mc2f.g00twesn.xqh3n984/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Ftobidasu-baisenjo%2Ftbb-set-01%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Ftobidasu-baisenjo%2Fi%2F10000020%2F&rafcid=wsc_i_is_a8fd1ed2-8341-41cd-8d5e-348dd7737f5d
   shop: とびだす焙煎所
   reviewAverage: 4.67
-  reviewCount: 4933
+  reviewCount: 4934
   priceBand: 手頃価格
   pros:
   - 初回購入向けの飲み比べセットで、複数の豆が少量ずつ試せる

@@ -1,7 +1,7 @@
 ---
 title: にじみにくいマスカラの選び方｜落ちない・長持ちする商品比較
 date: '2026-09-03'
-updated: '2026-09-03'
+updated: '2026-09-04'
 description: マスカラのにじみは季節や湿度で悪化します。にじみにくいマスカラを選ぶ際のポイント、まつ毛ケアとの組み合わせ、商品選びの失敗を防ぐコツをまとめました。
 category: メイクコスメ
 categorySlug: makeup
@@ -30,7 +30,7 @@ products:
   url: https://hb.afl.rakuten.co.jp/hgc/g00satmn.xqh3m514.g00satmn.xqh3n218/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fmenzsap%2Feternal%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fmenzsap%2Fi%2F10000813%2F&rafcid=wsc_i_is_a8fd1ed2-8341-41cd-8d5e-348dd7737f5d
   shop: リュバンブラン 楽天市場店
   reviewAverage: 4.36
-  reviewCount: 7600
+  reviewCount: 7602
   priceBand: 中価格帯
   pros:
   - ヒト幹細胞培養液とフムスエキスを配合し、まつ毛の根元からのケアに着目した処方が特徴です。
@@ -75,7 +75,7 @@ products:
   url: https://hb.afl.rakuten.co.jp/hgc/g00t3lin.xqh3mcc7.g00t3lin.xqh3n186/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fyayoi-cosme%2F66097%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fyayoi-cosme%2Fi%2F10003232%2F&rafcid=wsc_i_is_a8fd1ed2-8341-41cd-8d5e-348dd7737f5d
   shop: コスメティック やよい
   reviewAverage: 4.6
-  reviewCount: 1925
+  reviewCount: 1927
   priceBand: 中価格帯
   pros:
   - 資生堂の認定ショップで取り扱われており、正規品の安心感が得られます。
