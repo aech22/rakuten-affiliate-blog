@@ -32,18 +32,23 @@ const ogImg = new URL(ogImage ?? '/ogp.png', site).toString();
 const year = new Date().getFullYear();
 
 // サイト共通の構造化データ
+// @id を振るのは、記事ページの BlogPosting の publisher からこの実体を参照するため。
 const orgLd = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
+  '@id': new URL('/#organization', site).toString(),
   name: 'picknavi',
   url: site.toString(),
+  logo: { '@type': 'ImageObject', url: new URL('/ogp.png', site).toString() },
   description: 'おすすめ商品を写真・価格・レビューで比較するアフィリエイト比較メディア。',
 };
 const siteLd = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
+  '@id': new URL('/#website', site).toString(),
   name: 'picknavi',
   url: site.toString(),
+  publisher: { '@id': new URL('/#organization', site).toString() },
   inLanguage: 'ja',
 };
 const breadcrumbLd = breadcrumbs && breadcrumbs.length

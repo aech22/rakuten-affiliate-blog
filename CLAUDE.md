@@ -54,6 +54,18 @@
 - **トピックを追加するときは `slug` を必ず書く**（未設定・重複は `config.py` 末尾の assert が import 時に落とす）
 - 旧日本語URLの記事を英数へ移したくなった場合、ファイル名を変えるだけでは**旧URLが404になる**。移行するならリダイレクトの手当てとセットで判断する（現時点では未対応・やらない方針）
 
+## SEO の決めごと（2026-09-06）
+
+`affiliate-seo-baseline` の7項目のうち、このサイトに欠けていた構造的なものを埋めた。**公開済み記事のタイトル・description・カテゴリページの文言は触っていない**（既存URLの評価が動くため、需要データと Search Console の実績を見てから人が判断する）。
+
+- **記事ページは `BlogPosting` の構造化データを出す**（`ArticleLayout.astro`）。それまで `ItemList` と `FAQPage` しか無く、「いつ書かれた、誰の、何についての記事か」が伝わっていなかった。`author` は about ページが名乗っている運営者表記に合わせて屋号「TODGE」の `Organization`（**「株式会社」とは書かない**）。`publisher` は `BaseLayout` の `Organization` を `@id`（`/#organization`）で参照し、実体を二重に書かない
+- **sitemap は記事に `<lastmod>` を出す**（`astro.config.mjs`）。Content Collections は設定ファイルから読めないので frontmatter を直接パースする。priority はトップ1.0・記事0.8・カテゴリ/性別/ランキング0.6・固定ページ0.3。`.md` / `.mdx` 両対応
+- ⚠️ **lastmod の突き合わせは slug のデコードと小文字化が要る。** picknavi の記事 slug は**大半が日本語**（上の「記事URL」参照）なので sitemap の URL はパーセントエンコードされており、さらに Astro は slug を小文字化する（`キャンプ用LEDランタン…` → `キャンプ用ledランタン…`）。素直にファイル名でキーを作ると 61本中 6本しか一致しない。コドナビ（slug が英数）からそのまま移植すると黙って落ちる箇所
+- **`404.astro` を置いた**（GitHub Pages が `dist/404.html` を使う）。`noindex` 付きで、sitemap からは `filter` で除外。カテゴリ14種へ戻す導線だけを持つ
+- 記事末の関連記事（`[...slug].astro` が同カテゴリ→同性別で最大4件）は以前から入っているので触っていない
+
+⚠️ **検証はビルド後の `dist/` の grep で行う。** 楽天アフィリリンクとサイドバーの A8 テキストリンクを含むので、レンダリングすると誤インプレッションになる。
+
 ## 品質ゲート
 
 `scripts/quality_check.py`。workflow は `--prune`（NG記事だけ除外して他は公開・全滅時のみ失敗）。

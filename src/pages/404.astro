@@ -1,0 +1,26 @@
+---
+// 404。GitHub Pages は dist/404.html をそのまま使う。
+// リンク切れで来た人を行き止まりにせず、カテゴリの入口へ戻せるようにする。
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { CATEGORIES } from '../data/taxonomy';
+---
+<BaseLayout title="ページが見つかりません｜picknavi" noindex={true}>
+  <main class="mx-auto max-w-3xl px-4 py-20">
+    <h1 class="text-2xl font-black leading-tight sm:text-3xl">ページが見つかりませんでした</h1>
+    <p class="mt-4 text-[15px] leading-relaxed text-ink/70">
+      お探しのページは移動したか、URL が変わった可能性があります。カテゴリから探し直してみてください。
+    </p>
+    <ul class="mt-8 grid gap-2 sm:grid-cols-2">
+      {CATEGORIES.map((c) => (
+        <li>
+          <a href={`/categories/${c.slug}/`} class="font-bold text-brand-600 hover:underline">
+            {c.emoji} {c.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+    <p class="mt-10">
+      <a href="/" class="inline-flex items-center gap-1 text-sm font-black text-brand-600 hover:underline">← 記事一覧へ戻る</a>
+    </p>
+  </main>
+</BaseLayout>

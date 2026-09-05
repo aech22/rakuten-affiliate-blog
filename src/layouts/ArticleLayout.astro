@@ -60,6 +60,30 @@ if (gender) breadcrumbs.push({ name: gender.label, url: `/${gender.slug}/` });
 if (cat) breadcrumbs.push({ name: cat.label, url: `/categories/${cat.slug}/` });
 breadcrumbs.push({ name: data.title, url: Astro.url.pathname });
 
+// 記事ページの BlogPosting（2026-09-06）。ItemList だけでは「いつ書かれた、誰の、何についての記事か」が
+// 伝わらない。author は about ページが名乗っている運営者表記（屋号 TODGE）に合わせる。
+// publisher は BaseLayout の Organization を @id で参照する（実体を二重に書かない）。
+const site = Astro.site ?? new URL('https://picknavi.net');
+const articleUrl = new URL(Astro.url.pathname, site).toString();
+const blogPostingLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  mainEntityOfPage: articleUrl,
+  headline: clip(data.title, 110),
+  ...(data.description ? { description: data.description } : {}),
+  datePublished: data.date.toISOString(),
+  dateModified: (data.updated ?? data.date).toISOString(),
+  inLanguage: 'ja',
+  ...(cat ? { articleSection: cat.label } : {}),
+  ...(ogImage ? { image: ogImage } : {}),
+  author: {
+    '@type': 'Organization',
+    name: 'TODGE',
+    url: new URL('/about/', site).toString(),
+  },
+  publisher: { '@id': new URL('/#organization', site).toString() },
+};
+
 const itemListLd = {
   '@context': 'https://schema.org',
   '@type': 'ItemList',
@@ -97,6 +121,7 @@ const faqLd = faqs.length
 >
   <div class="mx-auto max-w-5xl px-4 py-8 lg:grid lg:grid-cols-[minmax(0,1fr)_280px] lg:gap-8 lg:items-start">
     <main class="min-w-0">
+    <Jsonld data={blogPostingLd} />
     <Jsonld data={itemListLd} />
     {faqLd && <Jsonld data={faqLd} />}
     <nav class="flex flex-wrap items-center gap-1 text-xs font-medium text-ink/40" aria-label="パンくず">
