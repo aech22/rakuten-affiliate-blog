@@ -1,7 +1,7 @@
 ---
 title: キャンプ用LEDランタン選び方|用途別おすすめ比較ガイド
 date: '2026-08-29'
-updated: '2026-09-04'
+updated: '2026-09-05'
 description: キャンプやアウトドアで活躍するLEDランタンの選び方を解説。充電方式・明るさ・携帯性など、失敗しない購入ポイントを紹介します。
 category: アウトドア系
 categorySlug: outdoor
@@ -30,7 +30,7 @@ products:
   url: https://hb.afl.rakuten.co.jp/hgc/g00rehxn.xqh3mbf3.g00rehxn.xqh3n997/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fdabada%2Fled-lantan-63%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fdabada%2Fi%2F10000536%2F&rafcid=wsc_i_is_a8fd1ed2-8341-41cd-8d5e-348dd7737f5d
   shop: DABADAストア 楽天市場店
   reviewAverage: 4.34
-  reviewCount: 5251
+  reviewCount: 5253
   priceBand: 手頃価格
   pros:
   - 5つの充電方式（USB・ソーラー・手回し・シガーソケット・乾電池）に対応し、あらゆる環境での運用が可能。
