@@ -1,7 +1,7 @@
 ---
 title: キャンプ用LEDランタン選び方|用途別おすすめ比較ガイド
 date: '2026-08-29'
-updated: '2026-09-05'
+updated: '2026-09-06'
 description: キャンプやアウトドアで活躍するLEDランタンの選び方を解説。充電方式・明るさ・携帯性など、失敗しない購入ポイントを紹介します。
 category: アウトドア系
 categorySlug: outdoor
@@ -45,7 +45,7 @@ products:
   url: https://hb.afl.rakuten.co.jp/hgc/g00tnrsn.xqh3ma24.g00tnrsn.xqh3n78e/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Flatuna%2F10000020%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Flatuna%2Fi%2F10000112%2F&rafcid=wsc_i_is_a8fd1ed2-8341-41cd-8d5e-348dd7737f5d
   shop: ラチュナ キングジム直営店
   reviewAverage: 4.56
-  reviewCount: 3242
+  reviewCount: 3243
   priceBand: 中価格帯
   pros:
   - 軽量でコンパクト設計のため、テント内の枕元やリビング周辺に自然に配置できる優しい光源。

@@ -1,7 +1,7 @@
 ---
 title: お取り寄せ冷凍餃子の選び方｜個性的な4商品を徹底比較
 date: '2026-09-01'
-updated: '2026-09-05'
+updated: '2026-09-06'
 description: 神戸の味噌だれ餃子、手羽先餃子、中華チェーン提携セット、黒餃子など個性豊かな冷凍餃子4品。それぞれの特徴と選び方を解説します。
 category: スイーツ・グルメ
 categorySlug: gourmet
@@ -45,7 +45,7 @@ products:
   url: https://hb.afl.rakuten.co.jp/hgc/g00pnzpn.xqh3m391.g00pnzpn.xqh3n452/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsuigodori%2Ftebagyoza%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fsuigodori%2Fi%2F10000552%2F&rafcid=wsc_i_is_a8fd1ed2-8341-41cd-8d5e-348dd7737f5d
   shop: 水郷のとりやさん
   reviewAverage: 4.68
-  reviewCount: 5063
+  reviewCount: 5064
   priceBand: 手頃価格
   pros:
   - 鶏肉を使った手羽先餃子で、骨付きならではの食べ応えと香ばしさが特徴。

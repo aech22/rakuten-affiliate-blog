@@ -1,7 +1,7 @@
 ---
 title: 崩れにくい化粧下地の選び方｜保湿力と密着度がカギ
 date: '2026-09-04'
-updated: '2026-09-05'
+updated: '2026-09-06'
 description: 化粧下地は朝のメイクの仕上がりと持ちを左右する重要なアイテム。保湿成分の配合、テクスチャー、肌質との相性を比較して、自分に合った崩れにくい下地を見つけるためのポイントを解説します。
 category: メイクコスメ
 categorySlug: makeup
@@ -75,7 +75,7 @@ products:
   url: https://hb.afl.rakuten.co.jp/hgc/g00qdaen.xqh3m9e4.g00qdaen.xqh3n6d8/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Flesthemo%2Fgcr%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Flesthemo%2Fi%2F10000002%2F&rafcid=wsc_i_is_a8fd1ed2-8341-41cd-8d5e-348dd7737f5d
   shop: ゲルクリームの【レステモ】
   reviewAverage: 4.72
-  reviewCount: 11315
+  reviewCount: 11316
   priceBand: 中価格帯
   pros:
   - 詰め替えカートリッジ形式で、本体購入後は継続使用時にコスト効率が高く続けやすい

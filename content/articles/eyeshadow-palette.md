@@ -1,7 +1,7 @@
 ---
 title: 捨て色なしアイシャドウパレット4選｜高発色で毎日使える
 date: '2026-09-03'
-updated: '2026-09-05'
+updated: '2026-09-06'
 description: トムフォード、クリオ、リリミュウ、ルナソルの捨て色なしアイシャドウパレットを比較。それぞれの色選び、質感、使いやすさの特徴から、自分に合う一枚を見つけるポイントを解説します。
 category: メイクコスメ
 categorySlug: makeup
@@ -30,7 +30,7 @@ products:
   url: https://hb.afl.rakuten.co.jp/hgc/g00u4fen.xqh3m77d.g00u4fen.xqh3nb96/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Ftomfordbeauty%2Feye_ecq%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Ftomfordbeauty%2Fi%2F10000000%2F&rafcid=wsc_i_is_a8fd1ed2-8341-41cd-8d5e-348dd7737f5d
   shop: トムフォードビューティ公式ストア
   reviewAverage: 4.83
-  reviewCount: 2629
+  reviewCount: 2630
   priceBand: 高価格帯
   pros:
   - 厳選された色彩と質感で、肌の骨格の美しさまで引き立てるアイシャドウパレット。トムフォードの美学に基づく色選びが信頼できます。
