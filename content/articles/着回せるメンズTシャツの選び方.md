@@ -60,7 +60,7 @@ products:
   url: https://hb.afl.rakuten.co.jp/hgc/g00qdnrn.xqh3m56b.g00qdnrn.xqh3n0b4/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Frinne%2F11easis03%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Frinne%2Fi%2F10008859%2F&rafcid=wsc_i_is_a8fd1ed2-8341-41cd-8d5e-348dd7737f5d
   shop: リンネ スノー・アンド・サーフ
   reviewAverage: 4.48
-  reviewCount: 5587
+  reviewCount: 5589
   priceBand: 中価格帯
   pros:
   - パーカー型なので肩と腕全体を覆い、日差しが強い山や海でも肌の露出を最小限に抑えられ、長時間のアウトドアに向いている。

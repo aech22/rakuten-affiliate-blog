@@ -30,7 +30,7 @@ products:
   url: https://hb.afl.rakuten.co.jp/hgc/g00tbhon.xqh3m6d8.g00tbhon.xqh3nc39/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fdripcoffee%2Frich-500-4%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fdripcoffee%2Fi%2F10000032%2F&rafcid=wsc_i_is_a8fd1ed2-8341-41cd-8d5e-348dd7737f5d
   shop: DRIP COFFEE FACTORY
   reviewAverage: 4.53
-  reviewCount: 5919
+  reviewCount: 5920
   priceBand: 中価格帯
   pros:
   - 1〜2kg単位で選べ、中深煎りの濃厚な味わいは毎日飲むなら風味が十分保つ
