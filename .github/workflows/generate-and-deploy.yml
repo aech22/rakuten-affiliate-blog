@@ -9,6 +9,10 @@ on:
         description: 'true にすると記事の再生成をスキップし、既存コンテンツのビルド/デプロイのみ行う（テンプレート変更の高速反映用）'
         type: boolean
         default: false
+      force_prose:
+        description: '講評文を全記事で作り直す（生成プロンプトの文体を変えたとき用・LLM呼び出しが全記事分かかる）'
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -38,6 +42,8 @@ jobs:
           # Origin/Referer は機密でないので平文。新APIの必須ヘッダに使う（登録ドメインと一致）
           RAKUTEN_REFERER:       https://picknavi.net/
           RAKUTEN_ORIGIN:        https://picknavi.net
+          # boolean 入力を env 経由で渡す（run: に直接展開しない＝コマンドインジェクション対策）
+          FORCE_PROSE:           ${{ inputs.force_prose }}
         run: python scripts/main.py
 
       # 機械的品質ゲート（人手レビューなし）。不合格記事があれば非ゼロ終了でジョブを止め、

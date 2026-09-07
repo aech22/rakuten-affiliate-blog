@@ -2,7 +2,6 @@
 import BaseLayout from './BaseLayout.astro';
 import Jsonld from '../components/Jsonld.astro';
 import Sidebar from '../components/Sidebar.astro';
-import ShiftyPromo from '../components/ShiftyPromo.astro';
 import { categoryBySlug, genderBySlug } from '../data/taxonomy';
 
 interface Product {
@@ -301,7 +300,6 @@ const faqLd = faqs.length
       </section>
     )}
 
-    <ShiftyPromo />
 
     {cat && (
       <p class="mt-10 text-sm">
