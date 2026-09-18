@@ -15,7 +15,7 @@
 | 本番URL | https://picknavi.net（独自ドメイン・ルート配信・`base` なし） |
 | GitHub | `aech22/rakuten-affiliate-blog`（public） |
 | 収益モデル | 楽天アフィリエイト（物販） |
-| 記事生成 | GitHub Actions が毎日 JST 10:00（cron `0 1 * * *`）に生成→品質ゲート→gh-pages |
+| 記事生成 | **待機中（2026-09-18〜）**。アフィリエイトをコドナビ一本に絞る決定で `generate-and-deploy.yml` の `schedule:` をコメントアウトした。`workflow_dispatch` は残してある。停止中は楽天の価格・在庫の再取得・Pinterest キット・X 投稿も止まる（ガジェナビと同じ扱い）。再開は cron のコメントを外すだけ |
 
 ## カテゴリ（14種）
 
